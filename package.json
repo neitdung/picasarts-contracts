@@ -1,0 +1,21 @@
+{
+  "name": "picasarts-contracts",
+  "version": "1.0.0",
+  "description": "Smart contract for picasarts",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "truffle migrate"
+  },
+  "keywords": [
+    "blockchain",
+    "nft"
+  ],
+  "author": "neitgnud@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.6.0",
+    "@truffle/hdwallet-provider": "^2.0.3",
+    "web3": "^1.2.9",
+    "web3-utils": "^1.7.0"
+  }
+}
