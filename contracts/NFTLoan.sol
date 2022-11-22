@@ -4,31 +4,37 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/interfaces/IERC2981.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/introspection/ERC165Checker.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./IERC4907.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import "./interfaces/IHubChild.sol";
 
-contract NFTLoan is ReentrancyGuard, Ownable {
+contract NFTLoan is IHubChild, ReentrancyGuard, Ownable {
     using Counters for Counters.Counter;
     using SafeMath for uint256;
-    using SafeMath for uint96;
-
+    using EnumerableSet for EnumerableSet.AddressSet;
+    using EnumerableMap for EnumerableMap.AddressToUintMap;
     Counters.Counter private _itemCount;
-    uint96 private LISTING_FEE;
-    uint96 private constant DENOMINATOR = 10000;
+    uint256 private RATE_FEE;
+    uint256 private constant DENOMINATOR = 10000;
     mapping(uint256 => Covenant) private _idToCovenant;
-
+    mapping(uint256 => Proposal) private _idToProposal;
+    mapping(address => uint256) private _loanAccepted;
+    mapping(address => uint256) private _loanLiquidated;
+    EnumerableSet.AddressSet private _acceptTokens;
+    EnumerableMap.AddressToUintMap private _addressFees;
+    
     bytes4 public constant ERC721INTERFACE = type(IERC721).interfaceId;
-    bytes4 public constant ERC4907INTERFACE = type(IERC4907).interfaceId;
-    address private _owner;
+    bytes4 public constant ERC2981INTERFACE = type(IERC2981).interfaceId;
 
     enum CovenantStatus {
-        NOT_LISTED,
         LISTING,
-        RENTING,
+        LOCKED,
         ENDED
     }
 
@@ -38,11 +44,19 @@ contract NFTLoan is ReentrancyGuard, Ownable {
         uint256 tokenId;
         address ftContract;
         uint256 amount;
+        uint256 profit;
         uint256 timeExpired;
         uint256 timeDays;
         CovenantStatus status;
         address borrower;
         address lender;
+        bool isLatest;
+    }
+
+    struct Proposal {
+        uint256 itemId;
+        uint256 profit;
+        uint256 timeExpired;
     }
 
     event CovenantListed(
@@ -68,20 +82,7 @@ contract NFTLoan is ReentrancyGuard, Ownable {
         uint256 timeDays
     );
 
-    event CovenantLease(
-        uint256 itemId,
-        address nftContract,
-        uint256 tokenId,
-        address ftContract,
-        uint256 amount,
-        uint256 profit,
-        uint256 timeExpired,
-        uint8 status,
-        address borrower,
-        address lender
-    );
-
-    event CovenantRedeem(
+    event CovenantPayOff(
         uint256 itemId,
         address nftContract,
         uint256 tokenId,
@@ -90,10 +91,28 @@ contract NFTLoan is ReentrancyGuard, Ownable {
         uint256 profit
     );
 
-    constructor(uint96 fee) {
+    event CovenantLiquidate(
+        uint256 itemId,
+        address nftContract,
+        uint256 tokenId
+    );
+
+    event CovenantAccept(
+        uint256 itemId,
+        address lender,
+        address ftContract,
+        uint256 amount,
+        uint256 profit,
+        uint256 timeExpired
+    );
+
+    event ProposalEdited(uint256 itemId, uint256 profit, uint256 timeExpired);
+
+    event ProposalAccepted(uint256 itemId, uint256 profit, uint256 timeExpired);
+
+    constructor(uint256 fee) {
         require(fee < DENOMINATOR, "Fee numerator must less than 100%");
-        _owner = msg.sender;
-        LISTING_FEE = fee;
+        RATE_FEE = fee;
     }
 
     modifier onlyBorrower(uint256 itemId) {
@@ -112,11 +131,6 @@ contract NFTLoan is ReentrancyGuard, Ownable {
         _;
     }
 
-    function setListingFee(uint96 fee) public onlyOwner {
-        require(fee < DENOMINATOR, "Fee numerator must less than 100%");
-        LISTING_FEE = fee;
-    }
-
     // List the NFT on the marketplace
     function listCovenant(
         address nftContract,
@@ -125,7 +139,7 @@ contract NFTLoan is ReentrancyGuard, Ownable {
         uint256 amount,
         uint256 profit,
         uint256 timeDays
-    ) public payable nonReentrant {
+    ) public nonReentrant {
         require(
             amount > 0 && profit > 0,
             "Loan amount and profit must be at least 1"
@@ -270,30 +284,16 @@ contract NFTLoan is ReentrancyGuard, Ownable {
             "Loan covenant is not listing."
         );
         Covenant storage loanCovenant = _idToCovenant[itemId];
-        uint256 fee = loanCovenant.amount;
-        fee = fee.mul(uint256(LISTING_FEE.div(DENOMINATOR)));
-        uint256 sentAmount = loanCovenant.amount.sub(fee);
-        sentAmount.sub(fee);
+
         if (loanCovenant.ftContract == address(0)) {
             require(msg.value == loanCovenant.amount, "Loan amount not exact");
-            if (fee > 0) {
-                payable(_owner).transfer(fee);
-            }
-            payable(loanCovenant.borrower).transfer(sentAmount);
-        } else {
-            if (fee > 0) {
-                IERC20(loanCovenant.ftContract).transferFrom(
-                    msg.sender,
-                    _owner,
-                    fee
-                );
-            }
-            IERC20(loanCovenant.ftContract).transferFrom(
-                msg.sender,
-                loanCovenant.borrower,
-                sentAmount
-            );
         }
+        sendAssets(
+            msg.sender,
+            loanCovenant.borrower,
+            loanCovenant.ftContract,
+            loanCovenant.amount
+        );
 
         loanCovenant.lender = msg.sender;
         uint256 timeAdd = loanCovenant.timeDays;
@@ -324,19 +324,55 @@ contract NFTLoan is ReentrancyGuard, Ownable {
         Covenant storage loanCovenant = _idToCovenant[itemId];
         uint256 totalPaid = loanCovenant.amount;
         totalPaid = totalPaid.add(loanCovenant.profit);
+        uint256 fee = _feeOf(msg.sender, loanCovenant.ftContract);
+        fee = loanCovenant.profit.mul(fee).div(DENOMINATOR);
         if (loanCovenant.ftContract == address(0)) {
             require(
                 msg.value == totalPaid,
                 "You must add exact amount and profit."
             );
-            payable(loanCovenant.lender).transfer(msg.value);
+        }
+        if (
+            ERC165Checker.supportsInterface(
+                loanCovenant.nftContract,
+                ERC2981INTERFACE
+            )
+        ) {
+            (address creator, uint256 royaltyAmount) = IERC2981(
+                loanCovenant.nftContract
+            ).royaltyInfo(loanCovenant.tokenId, loanCovenant.profit);
+            if (royaltyAmount > 0) {
+                sendAssets(
+                    msg.sender,
+                    creator,
+                    loanCovenant.ftContract,
+                    royaltyAmount
+                );
+                sendAssets(
+                    msg.sender,
+                    loanCovenant.lender,
+                    loanCovenant.ftContract,
+                    totalPaid.sub(royaltyAmount.add(fee))
+                );
+            } else {
+                sendAssets(
+                    msg.sender,
+                    loanCovenant.lender,
+                    loanCovenant.ftContract,
+                    totalPaid.sub(fee)
+                );
+            }
         } else {
-            IERC721(loanCovenant.nftContract).transferFrom(
+            sendAssets(
                 msg.sender,
                 loanCovenant.lender,
-                totalPaid
+                loanCovenant.ftContract,
+                totalPaid.sub(fee)
             );
         }
+
+        sendAssets(msg.sender, owner(), loanCovenant.ftContract, fee);
+
         IERC721(loanCovenant.nftContract).transferFrom(
             address(this),
             msg.sender,
@@ -379,10 +415,6 @@ contract NFTLoan is ReentrancyGuard, Ownable {
             loanCovenant.nftContract,
             loanCovenant.tokenId
         );
-    }
-
-    function getListingFee() public view returns (uint96) {
-        return LISTING_FEE;
     }
 
     function getCovenants() public view returns (Covenant[] memory) {
@@ -445,16 +477,119 @@ contract NFTLoan is ReentrancyGuard, Ownable {
         return (_loanAccepted[addr], _loanLiquidated[addr]);
     }
 
-    function getLoanData(address contractAddress, uint256 tokenId) public view returns (Covenant memory) {
+    function getLoanData(address contractAddress, uint256 tokenId)
+        public
+        view
+        returns (Covenant memory)
+    {
         Covenant memory covenant;
         uint256 cCount = _itemCount.current();
         for (uint256 i = 0; i < cCount; i++) {
-            if (_idToCovenant[i].nftContract == contractAddress && _idToCovenant[i].tokenId == tokenId && _idToCovenant[i].isLatest) {
+            if (
+                _idToCovenant[i].nftContract == contractAddress &&
+                _idToCovenant[i].tokenId == tokenId &&
+                _idToCovenant[i].isLatest
+            ) {
                 covenant = _idToCovenant[i];
                 break;
             }
         }
 
         return covenant;
+    }
+
+    function sendAssets(
+        address from,
+        address to,
+        address ftToken,
+        uint256 value
+    ) private {
+        if (ftToken == address(0)) {
+            payable(to).transfer(value);
+        } else {
+            if (from != address(this)) {
+                IERC20(ftToken).transferFrom(from, to, value);
+            } else {
+                IERC20(ftToken).transfer(to, value);
+            }
+        }
+    }
+
+    //IHubChild implement
+    function addAcceptToken(address tokenAddr) external override  onlyOwner {
+        _acceptTokens.add(tokenAddr);
+    }
+
+    function removeToken(address tokenAddr) external override onlyOwner {
+        _acceptTokens.remove(tokenAddr);
+    }
+
+    function getRateFee() external override view returns (uint256) {
+        return RATE_FEE;
+    }
+
+    function addWhitelistAddress(address whitelistAddress, uint256 fee)
+        external
+        override
+        onlyOwner
+    {
+        _addressFees.set(whitelistAddress, fee);
+    }
+
+    function removeWhitelistAddress(address whitelistAddress)
+        external
+        override
+        onlyOwner
+    {
+        _addressFees.remove(whitelistAddress);
+    }
+
+    function setRateFee(uint256 rateFee) external override onlyOwner {
+        require(rateFee < DENOMINATOR, "Fee numerator must less than 100%");
+        RATE_FEE = rateFee;
+    }
+
+    struct FeeVars {
+        bool exists;
+        uint256 value;
+    }
+
+    function _feeOf(address walletAddress, address tokenAddress)
+        private
+        view
+        returns (uint256)
+    {
+        FeeVars memory vars;
+        (vars.exists, vars.value) = _addressFees.tryGet(walletAddress);
+        if (vars.exists) {
+            return vars.value;
+        }
+        (vars.exists, vars.value) = _addressFees.tryGet(tokenAddress);
+        if (vars.exists) {
+            return vars.value;
+        }
+        return RATE_FEE;
+    }
+
+    function feeOf(address walletAddress, address tokenAddress)
+        external
+        override
+        view
+        returns (uint256)
+    {
+        return _feeOf(walletAddress, tokenAddress);
+    }
+
+    function getTokenFee(address tokenAddress) external override view returns (uint256) {
+        return _addressFees.get(tokenAddress);
+    }
+
+    function getAcceptTokens() external override view returns (address[] memory) {
+        uint256 length = _acceptTokens.length();
+        address[] memory addressList = new address[](length);
+        for (uint256 i = 0; i < length; i++) {
+            addressList[i] = _acceptTokens.at(i);
+        }
+        return addressList;
     }
 }

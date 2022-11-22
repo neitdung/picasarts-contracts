@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Royalty.sol";
-import "./IERC4907.sol";
+import "../interfaces/IERC4907.sol";
 
 contract PNFT is
     IERC4907,
@@ -56,7 +56,7 @@ contract PNFT is
     /// Throws if `tokenId` is not valid NFT
     /// @param user  The new user of the NFT
     /// @param expires  UNIX timestamp, The new user could use the NFT before expires
-    function setUser(uint256 tokenId, address user, uint64 expires) public virtual{
+    function setUser(uint256 tokenId, address user, uint64 expires) public override{
         require(_isApprovedOrOwner(msg.sender, tokenId), "ERC4907: transfer caller is not owner nor approved");
         UserInfo storage info =  _users[tokenId];
         info.user = user;
@@ -68,7 +68,7 @@ contract PNFT is
     /// @dev The zero address indicates that there is no user or the user is expired
     /// @param tokenId The NFT to get the user address for
     /// @return The user address for this NFT
-    function userOf(uint256 tokenId) public view virtual returns(address){
+    function userOf(uint256 tokenId) public view override returns(address){
         if( uint256(_users[tokenId].expires) >=  block.timestamp){
             return  _users[tokenId].user;
         }
@@ -81,7 +81,7 @@ contract PNFT is
     /// @dev The zero value indicates that there is no user
     /// @param tokenId The NFT to get the user expires for
     /// @return The user expires for this NFT
-    function userExpires(uint256 tokenId) public view virtual returns(uint256){
+    function userExpires(uint256 tokenId) public view override returns(uint256){
         return _users[tokenId].expires;
     }
 

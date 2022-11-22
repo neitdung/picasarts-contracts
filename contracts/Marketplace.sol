@@ -9,20 +9,25 @@ import "@openzeppelin/contracts/interfaces/IERC2981.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import "./interfaces/IHubChild.sol";
 
-contract Marketplace is ReentrancyGuard, Ownable {
+contract Marketplace is IHubChild, ReentrancyGuard, Ownable {
     using Counters for Counters.Counter;
     using SafeMath for uint256;
     using EnumerableSet for EnumerableSet.AddressSet;
+    using EnumerableMap for EnumerableMap.AddressToUintMap;
 
     Counters.Counter private _nftsSold;
     Counters.Counter private _nftCount;
-    uint256 public LISTING_FEE;
-    address private _marketOwner;
+    Counters.Counter private _nftExisted;
+    uint256 public RATE_FEE;
     mapping(uint256 => NFT) private _idToNFT;
     mapping(uint256 => Auction) private _idToAuction;
     EnumerableSet.AddressSet private _acceptTokens;
+    EnumerableMap.AddressToUintMap private _addressFees;
+    uint256 private constant DENOMINATOR = 10000;
 
     bytes4 public constant ERC721INTERFACE = type(IERC721).interfaceId;
     bytes4 public constant ERC2981INTERFACE = type(IERC2981).interfaceId;
@@ -76,8 +81,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
     );
 
     constructor(uint256 fee) {
-        _marketOwner = msg.sender;
-        LISTING_FEE = fee;
+        RATE_FEE = fee;
     }
 
     modifier isAcceptToken(address tokenAddr) {
@@ -88,33 +92,18 @@ contract Marketplace is ReentrancyGuard, Ownable {
         _;
     }
 
-    function setListingFee(uint256 fee) public onlyOwner {
-        LISTING_FEE = fee;
-    }
-
-    function addAcceptToken(address tokenAddr) public onlyOwner {
-        _acceptTokens.add(tokenAddr);
-    }
-
-    function removeToken(address tokenAddr) public onlyOwner {
-        _acceptTokens.remove(tokenAddr);
-    }
-
     // List the NFT on the marketplace
     function listNft(
         address nftContract,
         address ftContract,
         uint256 tokenId,
         uint256 price
-    ) public payable isAcceptToken(ftContract) nonReentrant {
+    ) public isAcceptToken(ftContract) nonReentrant {
         require(price > 0, "Price must be at least 1 wei");
-        require(msg.value == LISTING_FEE, "Not enough ether for listing fee");
-        require(
-            ERC165Checker.supportsInterface(nftContract, ERC721INTERFACE),
-            "Contract needs to be ERC721"
-        );
 
         IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
+        _nftCount.increment();
+        _nftExisted.increment();
         uint256 itemId = _nftCount.current();
         _idToNFT[itemId] = NFT(
             itemId,
@@ -140,7 +129,6 @@ contract Marketplace is ReentrancyGuard, Ownable {
             price,
             false
         );
-        _nftCount.increment();
     }
 
     // List the NFT on the marketplace
@@ -151,15 +139,16 @@ contract Marketplace is ReentrancyGuard, Ownable {
         uint256 price,
         bool limitTime,
         uint256 timeHour
-    ) public payable isAcceptToken(ftContract) nonReentrant {
+    ) public isAcceptToken(ftContract) nonReentrant {
         require(price > 0, "Price must be at least 1 wei");
-        require(msg.value == LISTING_FEE, "Not enough ether for listing fee");
         require(
             ERC165Checker.supportsInterface(nftContract, ERC721INTERFACE),
             "Contract needs to be ERC721"
         );
 
         IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
+        _nftCount.increment();
+        _nftExisted.increment();
         uint256 itemId = _nftCount.current();
 
         _idToNFT[itemId] = NFT(
@@ -191,7 +180,6 @@ contract Marketplace is ReentrancyGuard, Ownable {
             price,
             true
         );
-        _nftCount.increment();
     }
 
     // Switch auction to simple listed
@@ -199,7 +187,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
         uint256 itemId,
         address ftContract,
         uint256 price
-    ) public payable isAcceptToken(ftContract) nonReentrant {
+    ) public isAcceptToken(ftContract) nonReentrant {
         require(price > 0, "Price must be at least 1 wei");
         NFT storage nft = _idToNFT[itemId];
         require(msg.sender == nft.seller, "Sender must be seller");
@@ -234,7 +222,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
         uint256 price,
         bool limitTime,
         uint256 timeHour
-    ) public payable isAcceptToken(ftContract) nonReentrant {
+    ) public isAcceptToken(ftContract) nonReentrant {
         require(price > 0, "Price must be at least 1 wei");
         NFT storage nft = _idToNFT[itemId];
         require(msg.sender == nft.seller, "Sender must be seller");
@@ -265,9 +253,8 @@ contract Marketplace is ReentrancyGuard, Ownable {
         uint256 itemId,
         address ftContract,
         uint256 price
-    ) public payable isAcceptToken(ftContract) nonReentrant {
+    ) public isAcceptToken(ftContract) nonReentrant {
         require(price > 0, "Price must be at least 1 wei");
-        require(msg.value == LISTING_FEE, "Not enough ether for listing fee");
         NFT storage nft = _idToNFT[itemId];
         IERC721(nft.nftContract).transferFrom(
             msg.sender,
@@ -301,9 +288,8 @@ contract Marketplace is ReentrancyGuard, Ownable {
         uint256 price,
         bool limitTime,
         uint256 timeHour
-    ) public payable isAcceptToken(ftContract) nonReentrant {
+    ) public isAcceptToken(ftContract) nonReentrant {
         require(price > 0, "Price must be at least 1 wei");
-        require(msg.value == LISTING_FEE, "Not enough ether for listing fee");
         NFT storage nft = _idToNFT[itemId];
         IERC721(nft.nftContract).transferFrom(
             msg.sender,
@@ -346,7 +332,6 @@ contract Marketplace is ReentrancyGuard, Ownable {
             }
             delete _idToAuction[itemId];
         }
-        payable(address(_idToNFT[itemId].seller)).transfer(LISTING_FEE);
         IERC721(_idToNFT[itemId].nftContract).transferFrom(
             address(this),
             msg.sender,
@@ -354,7 +339,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
         );
         delete _idToNFT[itemId];
         _idToNFT[itemId].listed = false;
-        _nftCount.decrement();
+        _nftExisted.decrement();
         emit NFTUnlisted(itemId);
     }
 
@@ -372,6 +357,8 @@ contract Marketplace is ReentrancyGuard, Ownable {
             "Nft must be listed and not in the auction"
         );
         address payable buyer = payable(msg.sender);
+        uint256 fee = _feeOf(msg.sender, nft.ftContract);
+        fee = nft.price.mul(fee).div(DENOMINATOR);
         if (
             ERC165Checker.supportsInterface(nft.nftContract, ERC2981INTERFACE)
         ) {
@@ -383,21 +370,22 @@ contract Marketplace is ReentrancyGuard, Ownable {
                     msg.sender,
                     nft.seller,
                     nft.ftContract,
-                    nft.price.sub(royaltyAmount)
+                    nft.price.sub(royaltyAmount.add(fee))
                 );
             } else {
-                sendAssets(msg.sender, nft.seller, nft.ftContract, nft.price);
+                sendAssets(msg.sender, nft.seller, nft.ftContract, nft.price.sub(fee));
             }
         } else {
-            sendAssets(msg.sender, nft.seller, nft.ftContract, nft.price);
+            sendAssets(msg.sender, nft.seller, nft.ftContract, nft.price.sub(fee));
         }
+        sendAssets(msg.sender, owner(), nft.ftContract, fee);
 
         IERC721(nft.nftContract).transferFrom(
             address(this),
             buyer,
             nft.tokenId
         );
-        payable(_marketOwner).transfer(LISTING_FEE);
+        // payable(_marketOwner).transfer(LISTING_FEE);
         nft.owner = buyer;
         nft.listed = false;
 
@@ -469,7 +457,8 @@ contract Marketplace is ReentrancyGuard, Ownable {
             !auction.limitTime || (auction.timeEnd < block.timestamp),
             "Auction must be ended or not limit time"
         );
-
+        uint256 fee = _feeOf(msg.sender, nft.ftContract);
+        fee = auction.highestBid.mul(fee).div(DENOMINATOR);
         if (
             ERC165Checker.supportsInterface(nft.nftContract, ERC2981INTERFACE)
         ) {
@@ -486,14 +475,14 @@ contract Marketplace is ReentrancyGuard, Ownable {
                     address(this),
                     nft.seller,
                     nft.ftContract,
-                    auction.highestBid.sub(royaltyAmount)
+                    auction.highestBid.sub(royaltyAmount.add(fee))
                 );
             } else {
                 sendAssets(
                     address(this),
                     nft.seller,
                     nft.ftContract,
-                    auction.highestBid
+                    auction.highestBid.sub(fee)
                 );
             }
         } else {
@@ -501,16 +490,15 @@ contract Marketplace is ReentrancyGuard, Ownable {
                 address(this),
                 nft.seller,
                 nft.ftContract,
-                auction.highestBid
+                auction.highestBid.sub(fee)
             );
         }
-
+        sendAssets(msg.sender, owner(), nft.ftContract, fee);
         IERC721(nft.nftContract).transferFrom(
             address(this),
             auction.bidder,
             nft.tokenId
         );
-        payable(_marketOwner).transfer(LISTING_FEE);
         nft.owner = auction.bidder;
         nft.listed = false;
         auction.bidder = address(0);
@@ -528,43 +516,14 @@ contract Marketplace is ReentrancyGuard, Ownable {
         _nftsSold.increment();
     }
 
-    function getListingFee() public view returns (uint256) {
-        return LISTING_FEE;
-    }
-
     function getListedNfts() public view returns (NFT[] memory) {
         uint256 nftCount = _nftCount.current();
-        uint256 unsoldNftsCount = nftCount - _nftsSold.current();
+        uint256 existedItem = _nftExisted.current();
+        uint256 unsoldNftsCount = existedItem - _nftsSold.current();
 
         NFT[] memory nfts = new NFT[](unsoldNftsCount);
         uint256 nftsIndex = 0;
-        for (uint256 i = 0; i < nftCount; i++) {
-            if (_idToNFT[i].listed) {
-                nfts[nftsIndex] = _idToNFT[i];
-                nftsIndex++;
-            }
-        }
-        return nfts;
-    }
-
-    function getPaginatedListedNfts(uint256 startIndex, uint256 endIndex)
-        public
-        view
-        returns (NFT[] memory)
-    {
-        uint256 nftCount = _nftCount.current();
-        uint256 unsoldNftsCount = nftCount - _nftsSold.current();
-        require(
-            endIndex >= startIndex,
-            "End Index needs to be greater than or equal to start Index"
-        );
-        if (endIndex > unsoldNftsCount) {
-            endIndex = unsoldNftsCount;
-        }
-        uint256 length = endIndex - startIndex + 1;
-        NFT[] memory nfts = new NFT[](length);
-        uint256 nftsIndex = 0;
-        for (uint256 i = 0; i < nftCount && nftsIndex < length; i++) {
+        for (uint256 i = 0; i < nftCount && nftsIndex<= unsoldNftsCount; i++) {
             if (_idToNFT[i].listed) {
                 nfts[nftsIndex] = _idToNFT[i];
                 nftsIndex++;
@@ -659,21 +618,12 @@ contract Marketplace is ReentrancyGuard, Ownable {
         return (nft, auction);
     }
 
-    function getAcceptTokens() public view returns (address[] memory) {
-        uint256 length = _acceptTokens.length();
-        address[] memory addressList = new address[](length);
-        for (uint256 i = 0; i < length; i++) {
-            addressList[i] = _acceptTokens.at(i);
-        }
-        return addressList;
-    }
-
     function sendAssets(
         address from,
         address to,
         address ftToken,
         uint256 value
-    ) internal {
+    ) private {
         if (ftToken == address(0)) {
             payable(to).transfer(value);
         } else {
@@ -683,5 +633,83 @@ contract Marketplace is ReentrancyGuard, Ownable {
                 IERC20(ftToken).transfer(to, value);
             }
         }
+    }
+
+    //IHubChild implement
+    function addAcceptToken(address tokenAddr) external override  onlyOwner {
+        _acceptTokens.add(tokenAddr);
+    }
+
+    function removeToken(address tokenAddr) external override onlyOwner {
+        _acceptTokens.remove(tokenAddr);
+    }
+
+    function getRateFee() external override view returns (uint256) {
+        return RATE_FEE;
+    }
+
+    function addWhitelistAddress(address whitelistAddress, uint256 fee)
+        external
+        override
+        onlyOwner
+    {
+        _addressFees.set(whitelistAddress, fee);
+    }
+
+    function removeWhitelistAddress(address whitelistAddress)
+        external
+        override
+        onlyOwner
+    {
+        _addressFees.remove(whitelistAddress);
+    }
+
+    function setRateFee(uint256 rateFee) external override onlyOwner {
+        require(rateFee < DENOMINATOR, "Fee numerator must less than 100%");
+        RATE_FEE = rateFee;
+    }
+
+    struct FeeVars {
+        bool exists;
+        uint256 value;
+    }
+
+    function _feeOf(address walletAddress, address tokenAddress)
+        private
+        view
+        returns (uint256)
+    {
+        FeeVars memory vars;
+        (vars.exists, vars.value) = _addressFees.tryGet(walletAddress);
+        if (vars.exists) {
+            return vars.value;
+        }
+        (vars.exists, vars.value) = _addressFees.tryGet(tokenAddress);
+        if (vars.exists) {
+            return vars.value;
+        }
+        return RATE_FEE;
+    }
+
+    function feeOf(address walletAddress, address tokenAddress)
+        external
+        override
+        view
+        returns (uint256)
+    {
+        return _feeOf(walletAddress, tokenAddress);
+    }
+
+    function getTokenFee(address tokenAddress) external override view returns (uint256) {
+        return _addressFees.get(tokenAddress);
+    }
+
+    function getAcceptTokens() external override view returns (address[] memory) {
+        uint256 length = _acceptTokens.length();
+        address[] memory addressList = new address[](length);
+        for (uint256 i = 0; i < length; i++) {
+            addressList[i] = _acceptTokens.at(i);
+        }
+        return addressList;
     }
 }
