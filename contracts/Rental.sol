@@ -7,26 +7,15 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/interfaces/IERC2981.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/introspection/ERC165Checker.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
-import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-import "./interfaces/IHubChild.sol";
+import "./HubChild.sol";
 
-contract Rental is IHubChild, ReentrancyGuard, Ownable {
+contract Rental is HubChild {
     using Counters for Counters.Counter;
     using SafeMath for uint256;
-    using EnumerableSet for EnumerableSet.AddressSet;
-    using EnumerableMap for EnumerableMap.AddressToUintMap;
     Counters.Counter private _itemCount;
-    uint256 private RATE_FEE;
-    uint256 private constant DENOMINATOR = 10000;
     mapping(uint256 => Covenant) private _idToCovenant;
     mapping(uint256 => CovenantProfile) private _idToProfile;
-    EnumerableSet.AddressSet private _acceptTokens;
-    EnumerableMap.AddressToUintMap private _addressFees;
-
     bytes4 public constant ERC721INTERFACE = type(IERC721).interfaceId;
     bytes4 public constant ERC2981INTERFACE = type(IERC2981).interfaceId;
 
@@ -113,7 +102,6 @@ contract Rental is IHubChild, ReentrancyGuard, Ownable {
 
         _idToProfile[itemId] = CovenantProfile(
             address(0),
-            false,
             block.timestamp,
             0,
             0
@@ -243,153 +231,153 @@ contract Rental is IHubChild, ReentrancyGuard, Ownable {
                 );
             }
         } else {
-            _idToProfile[itemId].isStreaming = true;
+            // _idToProfile[itemId].isStreaming = true;
         }
         _idToCovenant[itemId].status = CovenantStatus.RENTING;
         _idToProfile[itemId].borrower = msg.sender;
     }
 
-    function payOff(uint256 itemId)
-        external
-        payable
-        onlyBorrower(itemId)
-        nonReentrant
-    {
-        require(
-            _idToCovenant[itemId].status == CovenantStatus.LOCKED &&
-                _idToCovenant[itemId].timeExpired > block.timestamp,
-            "Time is up. Contact lender for extend time."
-        );
-        Covenant storage rentalCovenant = _idToCovenant[itemId];
-        uint256 totalPaid = rentalCovenant.amount;
-        totalPaid = totalPaid.add(rentalCovenant.profit);
-        uint256 fee = _feeOf(msg.sender, rentalCovenant.ftContract);
-        fee = rentalCovenant.profit.mul(fee).div(DENOMINATOR);
-        if (rentalCovenant.ftContract == address(0)) {
-            require(
-                msg.value == totalPaid,
-                "You must add exact amount and profit."
-            );
-        }
+    // function payOff(uint256 itemId)
+    //     external
+    //     payable
+    //     onlyBorrower(itemId)
+    //     nonReentrant
+    // {
+    //     require(
+    //         _idToCovenant[itemId].status == CovenantStatus.LOCKED &&
+    //             _idToCovenant[itemId].timeExpired > block.timestamp,
+    //         "Time is up. Contact lender for extend time."
+    //     );
+    //     Covenant storage rentalCovenant = _idToCovenant[itemId];
+    //     uint256 totalPaid = rentalCovenant.amount;
+    //     totalPaid = totalPaid.add(rentalCovenant.profit);
+    //     uint256 fee = _feeOf(msg.sender, rentalCovenant.ftContract);
+    //     fee = rentalCovenant.profit.mul(fee).div(DENOMINATOR);
+    //     if (rentalCovenant.ftContract == address(0)) {
+    //         require(
+    //             msg.value == totalPaid,
+    //             "You must add exact amount and profit."
+    //         );
+    //     }
 
 
-        sendAssets(msg.sender, owner(), rentalCovenant.ftContract, fee);
+    //     sendAssets(msg.sender, owner(), rentalCovenant.ftContract, fee);
 
-        IERC721(rentalCovenant.nftContract).transferFrom(
-            address(this),
-            msg.sender,
-            rentalCovenant.tokenId
-        );
-        rentalCovenant.status = CovenantStatus.ENDED;
-        rentalCovenant.isLatest = false;
-        // emit CovenantPayOff(
-        //     itemId,
-        //     rentalCovenant.nftContract,
-        //     rentalCovenant.tokenId,
-        //     rentalCovenant.ftContract,
-        //     rentalCovenant.amount,
-        //     rentalCovenant.profit
-        // );
-    }
+    //     IERC721(rentalCovenant.nftContract).transferFrom(
+    //         address(this),
+    //         msg.sender,
+    //         rentalCovenant.tokenId
+    //     );
+    //     rentalCovenant.status = CovenantStatus.ENDED;
+    //     rentalCovenant.isLatest = false;
+    //     // emit CovenantPayOff(
+    //     //     itemId,
+    //     //     rentalCovenant.nftContract,
+    //     //     rentalCovenant.tokenId,
+    //     //     rentalCovenant.ftContract,
+    //     //     rentalCovenant.amount,
+    //     //     rentalCovenant.profit
+    //     // );
+    // }
 
-    function liquidate(uint256 itemId)
-        external
-        payable
-        onlyLender(itemId)
-        nonReentrant
-    {
-        require(
-            _idToCovenant[itemId].status == CovenantStatus.LOCKED &&
-                _idToCovenant[itemId].timeExpired < block.timestamp,
-            "Not time for liquidate covenant"
-        );
-        Covenant storage rentalCovenant = _idToCovenant[itemId];
-        IERC721(rentalCovenant.nftContract).transferFrom(
-            address(this),
-            msg.sender,
-            rentalCovenant.tokenId
-        );
-        rentalCovenant.status = CovenantStatus.ENDED;
-        rentalCovenant.isLatest = false;
-        // emit CovenantLiquidate(
-        //     itemId,
-        //     rentalCovenant.nftContract,
-        //     rentalCovenant.tokenId
-        // );
-    }
+    // function liquidate(uint256 itemId)
+    //     external
+    //     payable
+    //     onlyLender(itemId)
+    //     nonReentrant
+    // {
+    //     require(
+    //         _idToCovenant[itemId].status == CovenantStatus.LOCKED &&
+    //             _idToCovenant[itemId].timeExpired < block.timestamp,
+    //         "Not time for liquidate covenant"
+    //     );
+    //     Covenant storage rentalCovenant = _idToCovenant[itemId];
+    //     IERC721(rentalCovenant.nftContract).transferFrom(
+    //         address(this),
+    //         msg.sender,
+    //         rentalCovenant.tokenId
+    //     );
+    //     rentalCovenant.status = CovenantStatus.ENDED;
+    //     rentalCovenant.isLatest = false;
+    //     // emit CovenantLiquidate(
+    //     //     itemId,
+    //     //     rentalCovenant.nftContract,
+    //     //     rentalCovenant.tokenId
+    //     // );
+    // }
 
-    function getCovenants() public view returns (Covenant[] memory) {
-        uint256 covenantCount = _itemCount.current();
+    // function getCovenants() public view returns (Covenant[] memory) {
+    //     uint256 covenantCount = _itemCount.current();
 
-        Covenant[] memory covenants = new Covenant[](covenantCount);
-        uint256 covenantIndex = 0;
-        for (uint256 i = 0; i < covenantCount; i++) {
-            covenants[covenantIndex] = _idToCovenant[i];
-            covenantIndex++;
-        }
-        return covenants;
-    }
+    //     Covenant[] memory covenants = new Covenant[](covenantCount);
+    //     uint256 covenantIndex = 0;
+    //     for (uint256 i = 0; i < covenantCount; i++) {
+    //         covenants[covenantIndex] = _idToCovenant[i];
+    //         covenantIndex++;
+    //     }
+    //     return covenants;
+    // }
 
-    function getCovenantsByAddress(address addr)
-        public
-        view
-        returns (Covenant[] memory)
-    {
-        uint256 covenantCount = _itemCount.current();
-        uint256 myListedCovenantCount = 0;
-        for (uint256 i = 0; i < covenantCount; i++) {
-            if (
-                _idToCovenant[i].borrower == addr ||
-                _idToCovenant[i].lender == addr
-            ) {
-                myListedCovenantCount++;
-            }
-        }
+    // function getCovenantsByAddress(address addr)
+    //     public
+    //     view
+    //     returns (Covenant[] memory)
+    // {
+    //     uint256 covenantCount = _itemCount.current();
+    //     uint256 myListedCovenantCount = 0;
+    //     for (uint256 i = 0; i < covenantCount; i++) {
+    //         if (
+    //             _idToCovenant[i].borrower == addr ||
+    //             _idToCovenant[i].lender == addr
+    //         ) {
+    //             myListedCovenantCount++;
+    //         }
+    //     }
 
-        Covenant[] memory covenants = new Covenant[](covenantCount);
-        uint256 covenantIndex = 0;
-        for (uint256 i = 0; i < myListedCovenantCount; i++) {
-            if (
-                _idToCovenant[i].borrower == addr ||
-                _idToCovenant[i].lender == addr
-            ) {
-                covenants[covenantIndex] = _idToCovenant[i];
-                covenantIndex++;
-            }
-        }
-        return covenants;
-    }
+    //     Covenant[] memory covenants = new Covenant[](covenantCount);
+    //     uint256 covenantIndex = 0;
+    //     for (uint256 i = 0; i < myListedCovenantCount; i++) {
+    //         if (
+    //             _idToCovenant[i].borrower == addr ||
+    //             _idToCovenant[i].lender == addr
+    //         ) {
+    //             covenants[covenantIndex] = _idToCovenant[i];
+    //             covenantIndex++;
+    //         }
+    //     }
+    //     return covenants;
+    // }
 
-    function getCovenant(uint256 itemId)
-        public
-        view
-        returns (Covenant memory, CovenantProfile memory)
-    {
-        Covenant memory covenant = _idToCovenant[itemId];
-        CovenantProfile memory profile = _idToProfile[itemId];
-        return (covenant, profile);
-    }
+    // function getCovenant(uint256 itemId)
+    //     public
+    //     view
+    //     returns (Covenant memory, CovenantProfile memory)
+    // {
+    //     Covenant memory covenant = _idToCovenant[itemId];
+    //     CovenantProfile memory profile = _idToProfile[itemId];
+    //     return (covenant, profile);
+    // }
 
-    function getRentalData(address contractAddress, uint256 tokenId)
-        public
-        view
-        returns (Covenant memory)
-    {
-        Covenant memory covenant;
-        uint256 cCount = _itemCount.current();
-        for (uint256 i = 0; i < cCount; i++) {
-            if (
-                _idToCovenant[i].nftContract == contractAddress &&
-                _idToCovenant[i].tokenId == tokenId &&
-                _idToCovenant[i].isLatest
-            ) {
-                covenant = _idToCovenant[i];
-                break;
-            }
-        }
+    // function getRentalData(address contractAddress, uint256 tokenId)
+    //     public
+    //     view
+    //     returns (Covenant memory)
+    // {
+    //     Covenant memory covenant;
+    //     uint256 cCount = _itemCount.current();
+    //     for (uint256 i = 0; i < cCount; i++) {
+    //         if (
+    //             _idToCovenant[i].nftContract == contractAddress &&
+    //             _idToCovenant[i].tokenId == tokenId &&
+    //             _idToCovenant[i].isLatest
+    //         ) {
+    //             covenant = _idToCovenant[i];
+    //             break;
+    //         }
+    //     }
 
-        return covenant;
-    }
+    //     return covenant;
+    // }
 
     function sendAssets(
         address from,
@@ -406,83 +394,5 @@ contract Rental is IHubChild, ReentrancyGuard, Ownable {
                 IERC20(ftToken).transfer(to, value);
             }
         }
-    }
-
-    //IHubChild implement
-    function addAcceptToken(address tokenAddr) external override  onlyOwner {
-        _acceptTokens.add(tokenAddr);
-    }
-
-    function removeToken(address tokenAddr) external override onlyOwner {
-        _acceptTokens.remove(tokenAddr);
-    }
-
-    function getRateFee() external override view returns (uint256) {
-        return RATE_FEE;
-    }
-
-    function addWhitelistAddress(address whitelistAddress, uint256 fee)
-        external
-        override
-        onlyOwner
-    {
-        _addressFees.set(whitelistAddress, fee);
-    }
-
-    function removeWhitelistAddress(address whitelistAddress)
-        external
-        override
-        onlyOwner
-    {
-        _addressFees.remove(whitelistAddress);
-    }
-
-    function setRateFee(uint256 rateFee) external override onlyOwner {
-        require(rateFee < DENOMINATOR, "Fee numerator must less than 100%");
-        RATE_FEE = rateFee;
-    }
-
-    struct FeeVars {
-        bool exists;
-        uint256 value;
-    }
-
-    function _feeOf(address walletAddress, address tokenAddress)
-        private
-        view
-        returns (uint256)
-    {
-        FeeVars memory vars;
-        (vars.exists, vars.value) = _addressFees.tryGet(walletAddress);
-        if (vars.exists) {
-            return vars.value;
-        }
-        (vars.exists, vars.value) = _addressFees.tryGet(tokenAddress);
-        if (vars.exists) {
-            return vars.value;
-        }
-        return RATE_FEE;
-    }
-
-    function feeOf(address walletAddress, address tokenAddress)
-        external
-        override
-        view
-        returns (uint256)
-    {
-        return _feeOf(walletAddress, tokenAddress);
-    }
-
-    function getTokenFee(address tokenAddress) external override view returns (uint256) {
-        return _addressFees.get(tokenAddress);
-    }
-
-    function getAcceptTokens() external override view returns (address[] memory) {
-        uint256 length = _acceptTokens.length();
-        address[] memory addressList = new address[](length);
-        for (uint256 i = 0; i < length; i++) {
-            addressList[i] = _acceptTokens.at(i);
-        }
-        return addressList;
     }
 }
