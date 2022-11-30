@@ -26,7 +26,7 @@ contract PNFT is
     struct UserInfo 
     {
         address user;   // address of user role
-        uint64 expires; // unix timestamp, user expires
+        uint256 expires; // unix timestamp, user expires
     }
 
     mapping (uint256  => UserInfo) internal _users;
@@ -56,7 +56,7 @@ contract PNFT is
     /// Throws if `tokenId` is not valid NFT
     /// @param user  The new user of the NFT
     /// @param expires  UNIX timestamp, The new user could use the NFT before expires
-    function setUser(uint256 tokenId, address user, uint64 expires) public override{
+    function setUser(uint256 tokenId, address user, uint256 expires) public override{
         require(_isApprovedOrOwner(msg.sender, tokenId), "ERC4907: transfer caller is not owner nor approved");
         UserInfo storage info =  _users[tokenId];
         info.user = user;
