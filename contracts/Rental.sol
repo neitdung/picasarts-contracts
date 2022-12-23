@@ -45,11 +45,11 @@ contract Rental is HubChild {
         address lender;
     }
 
-    constructor(uint256 fee) {
-        require(fee < DENOMINATOR, "Fee numerator must less than 100%");
+    constructor(uint256 fee, address hub) {
         RATE_FEE = fee;
+        setHub(hub);
     }
-
+    
     modifier onlyBorrower(uint256 itemId) {
         require(
             _idToProfile[itemId].borrower == msg.sender,
@@ -190,24 +190,41 @@ contract Rental is HubChild {
         rentalCovenant.status = CovenantStatus.UNLISTED;
     }
 
-    function rentNew(uint256 itemId, uint256 amount)
-        public
-        payable
-        nonReentrant
-    {
+    function rent(uint256 itemId, uint256 amount) public payable nonReentrant {
         require(
             _idToCovenant[itemId].lender != msg.sender,
             "Sender must be not lender"
         );
-        require(
-            _idToCovenant[itemId].status == CovenantStatus.LISTING,
-            "Rental covenant must be listing."
-        );
 
+        require(
+            _idToCovenant[itemId].status == CovenantStatus.RENTING ||
+                _idToCovenant[itemId].status == CovenantStatus.LISTING,
+            "Not accepted state"
+        );
         Covenant storage rentalCovenant = _idToCovenant[itemId];
         uint256 duration = amount / rentalCovenant.releaseFrequency;
         uint256 realAmount = duration * rentalCovenant.releaseFrequency;
         uint256 refund = amount - realAmount;
+
+        uint256 startTime = block.timestamp;
+        if (_idToCovenant[itemId].status == CovenantStatus.RENTING) {
+            require(
+                _idToProfile[itemId].startTime +
+                    _idToProfile[itemId].duration *
+                    _idToCovenant[itemId].cycleTime >
+                    block.timestamp,
+                "Rental covenant must be ended"
+            );
+            if (
+                _idToProfile[itemId].duration !=
+                _idToProfile[itemId].withdrawRound
+            ) {
+                startTime -=
+                    _idToProfile[itemId].duration *
+                    rentalCovenant.cycleTime;
+                duration += _idToProfile[itemId].duration;
+            }
+        }
 
         if (rentalCovenant.ftContract == address(0)) {
             require(msg.value == amount, "Rental amount not exact");
@@ -227,69 +244,11 @@ contract Rental is HubChild {
                 realAmount
             );
         }
-        uint256 startTime = block.timestamp;
+
         IERC4907(rentalCovenant.nftContract).setUser(
             rentalCovenant.tokenId,
             msg.sender,
-            duration * rentalCovenant.cycleTime + startTime
-        );
-        rentalCovenant.status = CovenantStatus.RENTING;
-        _idToProfile[itemId].borrower = msg.sender;
-        _idToProfile[itemId].startTime = startTime;
-        _idToProfile[itemId].duration = duration;
-    }
-
-    function rentOld(uint256 itemId, uint256 amount) public payable {
-        require(
-            _idToCovenant[itemId].lender != msg.sender,
-            "Sender must be not lender"
-        );
-        require(
-            _idToProfile[itemId].startTime +
-                _idToProfile[itemId].duration *
-                _idToCovenant[itemId].cycleTime >
-                block.timestamp &&
-                _idToCovenant[itemId].status == CovenantStatus.RENTING,
-            "Rental covenant must be renting."
-        );
-
-        Covenant storage rentalCovenant = _idToCovenant[itemId];
-        uint256 duration = amount / rentalCovenant.releaseFrequency;
-        uint256 realAmount = duration * rentalCovenant.releaseFrequency;
-        uint256 refund = amount - realAmount;
-
-        if (rentalCovenant.ftContract == address(0)) {
-            require(msg.value == amount, "Rental amount not exact");
-            if (refund > 0) {
-                sendAssets(
-                    address(this),
-                    msg.sender,
-                    rentalCovenant.ftContract,
-                    refund
-                );
-            }
-        } else {
-            sendAssets(
-                msg.sender,
-                address(this),
-                rentalCovenant.ftContract,
-                realAmount
-            );
-        }
-        uint256 startTime = block.timestamp;
-
-        if (
-            _idToProfile[itemId].duration != _idToProfile[itemId].withdrawRound
-        ) {
-            startTime -=
-                _idToProfile[itemId].duration *
-                rentalCovenant.cycleTime;
-            duration += _idToProfile[itemId].duration;
-        }
-        IERC4907(rentalCovenant.nftContract).setUser(
-            rentalCovenant.tokenId,
-            msg.sender,
-            duration * rentalCovenant.cycleTime + startTime
+            uint96(duration * rentalCovenant.cycleTime + startTime)
         );
         rentalCovenant.status = CovenantStatus.RENTING;
         _idToProfile[itemId].borrower = msg.sender;
@@ -335,7 +294,7 @@ contract Rental is HubChild {
         IERC4907(rentalCovenant.nftContract).setUser(
             rentalCovenant.tokenId,
             msg.sender,
-            duration * rentalCovenant.cycleTime + _idToProfile[itemId].startTime
+            uint96(duration * rentalCovenant.cycleTime + _idToProfile[itemId].startTime)
         );
         rentalCovenant.status = CovenantStatus.RENTING;
         _idToProfile[itemId].borrower = msg.sender;
@@ -421,9 +380,9 @@ contract Rental is HubChild {
         IERC4907(rentalCovenant.nftContract).setUser(
             rentalCovenant.tokenId,
             msg.sender,
-            currentCycle *
+            uint96(currentCycle *
                 rentalCovenant.cycleTime +
-                _idToProfile[itemId].startTime
+                _idToProfile[itemId].startTime)
         );
         _idToProfile[itemId].duration = currentCycle;
     }
@@ -451,7 +410,8 @@ contract Rental is HubChild {
 
         Covenant storage rentalCovenant = _idToCovenant[itemId];
 
-        uint256 amount = rentalCovenant.releaseFrequency * (currentCycle - _idToProfile[itemId].withdrawRound);
+        uint256 amount = rentalCovenant.releaseFrequency *
+            (currentCycle - _idToProfile[itemId].withdrawRound);
         uint256 fee = _feeOf(rentalCovenant.lender, rentalCovenant.ftContract);
         fee = (amount * fee) / DENOMINATOR;
         if (

@@ -70,8 +70,9 @@ contract Marketplace is HubChild {
         uint256 price
     );
 
-    constructor(uint256 fee) {
+    constructor(uint256 fee, address hub) {
         RATE_FEE = fee;
+        setHub(hub);
     }
 
     // List the NFT on the marketplace

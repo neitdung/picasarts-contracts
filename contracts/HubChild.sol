@@ -15,6 +15,7 @@ abstract contract HubChild is IHubChild, Ownable, ReentrancyGuard {
 
     uint256 public RATE_FEE;
     uint256 public constant DENOMINATOR = 10000;
+    address public hubAddr;
 
     modifier isAcceptToken(address tokenAddr) {
         require(
@@ -24,12 +25,24 @@ abstract contract HubChild is IHubChild, Ownable, ReentrancyGuard {
         _;
     }
 
+    modifier onlyHub() {
+        require(
+            msg.sender == hubAddr,
+            "Must be hub contract"
+        );
+        _;
+    }
+
     //IHubChild implement
-    function addAcceptToken(address tokenAddr) external override  onlyOwner {
+    function setHub(address hub) public override onlyOwner {
+        hubAddr = hub;
+    }
+
+    function addAcceptToken(address tokenAddr) external override  onlyHub {
         _acceptTokens.add(tokenAddr);
     }
 
-    function removeToken(address tokenAddr) external override onlyOwner {
+    function removeToken(address tokenAddr) external override onlyHub {
         _acceptTokens.remove(tokenAddr);
     }
 
@@ -40,7 +53,7 @@ abstract contract HubChild is IHubChild, Ownable, ReentrancyGuard {
     function addWhitelistAddress(address whitelistAddress, uint256 fee)
         external
         override
-        onlyOwner
+        onlyHub
     {
         _addressFees.set(whitelistAddress, fee);
     }
@@ -48,12 +61,12 @@ abstract contract HubChild is IHubChild, Ownable, ReentrancyGuard {
     function removeWhitelistAddress(address whitelistAddress)
         external
         override
-        onlyOwner
+        onlyHub
     {
         _addressFees.remove(whitelistAddress);
     }
 
-    function setRateFee(uint256 rateFee) external override onlyOwner {
+    function setRateFee(uint256 rateFee) external override onlyHub {
         require(rateFee < DENOMINATOR, "Fee numerator must less than 100%");
         RATE_FEE = rateFee;
     }

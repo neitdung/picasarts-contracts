@@ -6,6 +6,7 @@ pragma abicoder v2;
 import "./IHub.sol";
 
 interface IHubChild is IHub {
+    function setHub(address hub) external;
     function feeOf(address walletAddress, address tokenAddress)
         external
         view

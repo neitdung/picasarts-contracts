@@ -142,7 +142,7 @@ contract Hub is IHub, AccessControl, ReentrancyGuard {
         string calldata metadata
     ) public payable onlyRole(ARTIST_ROLE) nonReentrant {
         require(
-            msg.value >= CREATE_FEE,
+            msg.value == CREATE_FEE,
             "Need more fee for create collection (include storage banner, logo,...)"
         );
         uint256 itemId = _itemCount.current();
@@ -169,7 +169,7 @@ contract Hub is IHub, AccessControl, ReentrancyGuard {
         nonReentrant
     {
         require(
-            msg.value >= CREATE_FEE,
+            msg.value == CREATE_FEE,
             "Need more fee for create collection (include storage banner, logo,...)"
         );
         require(

@@ -101,9 +101,9 @@ contract NFTLoan is HubChild {
 
     event ProposalAccepted(uint256 itemId, uint256 profit, uint256 timeExpired);
 
-    constructor(uint256 fee) {
-        require(fee < DENOMINATOR, "Fee numerator must less than 100%");
+    constructor(uint256 fee, address hub) {
         RATE_FEE = fee;
+        setHub(hub);
     }
 
     modifier onlyBorrower(uint256 itemId) {

@@ -1,21 +1,28 @@
 {
-  "name": "picasarts-contracts",
-  "version": "1.0.0",
-  "description": "Smart contract for picasarts",
-  "main": "index.js",
-  "scripts": {
-    "deploy": "truffle migrate"
+  "name": "picasart-contracts",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0"
   },
-  "keywords": [
-    "blockchain",
-    "nft"
-  ],
-  "author": "neitgnud@gmail.com",
-  "license": "MIT",
+  "description": "This project demonstrates a basic Hardhat use case.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neitgnud/picasarts-contracts.git"
+  },
+  "author": "neitgnud",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/neitgnud/picasarts-contracts/issues"
+  },
+  "homepage": "https://github.com/neitgnud/picasarts-contracts#readme",
   "dependencies": {
-    "@openzeppelin/contracts": "^4.6.0",
-    "@truffle/hdwallet-provider": "^2.0.3",
-    "web3": "^1.2.9",
-    "web3-utils": "^1.7.0"
+    "@openzeppelin/contracts": "^4.6.0"
   }
 }
