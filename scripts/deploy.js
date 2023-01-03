@@ -28,11 +28,15 @@ async function main() {
   const rental = await Rental.deploy(RATE_FEE, hub.address);
 
   await rental.deployed();
-
+  await hub.addHubChild(market.address);
+  await hub.addHubChild(loan.address);
+  await hub.addHubChild(rental.address);
+  let children = await hub.getHubChild();
   console.log("Hub: ", hub.address);
   console.log("Market: ", market.address);
   console.log("NFTLoan: ", loan.address);
   console.log("Rental: ", rental.address);
+  console.log("Hub child: ", children);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

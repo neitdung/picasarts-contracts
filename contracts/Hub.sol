@@ -18,7 +18,7 @@ contract Hub is IHub, AccessControl, ReentrancyGuard {
 
     bytes32 public constant ARTIST_ROLE = keccak256("ARTIST_ROLE");
     bytes4 public constant ERC721INTERFACE = type(IERC721).interfaceId;
-
+    uint256 public RATE_FEE;
     Counters.Counter private _itemCount;
     uint256[] public collectionIds;
     EnumerableSet.AddressSet private _hubChild;
@@ -80,6 +80,14 @@ contract Hub is IHub, AccessControl, ReentrancyGuard {
         _hubChild.remove(childAddress);
     }
 
+    function getHubChild()
+        external
+        view
+        returns (address[] memory)
+    {
+        return _hubChild.values();
+    }
+
     //IHub implement
     function addAcceptToken(address tokenAddr)
         external
@@ -128,9 +136,10 @@ contract Hub is IHub, AccessControl, ReentrancyGuard {
             IHubChild(_hubChild.at(i)).removeWhitelistAddress(whitelistAddress);
         }
     }
-
+    
     function setRateFee(uint256 rateFee) external override onlyRole(DEFAULT_ADMIN_ROLE) {
         uint256 childLength = _hubChild.length();
+        RATE_FEE = rateFee;
         for (uint256 i = 0; i <= childLength; i++) {
             IHubChild(_hubChild.at(i)).setRateFee(rateFee);
         }

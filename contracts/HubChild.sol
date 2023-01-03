@@ -66,6 +66,22 @@ abstract contract HubChild is IHubChild, Ownable, ReentrancyGuard {
         _addressFees.remove(whitelistAddress);
     }
 
+    function getWhitelist()
+        external
+        view
+        override
+        returns (WhitelistVars[] memory)
+    {
+        uint256 len = _addressFees.length();
+        WhitelistVars[] memory list = new WhitelistVars[](len);
+        
+        for (uint256 i =0; i <len; i++) {
+            (address addr, uint256 fee) = _addressFees.at(i);
+            list[i] = WhitelistVars(addr, fee);
+        }
+        return list;
+    }
+
     function setRateFee(uint256 rateFee) external override onlyHub {
         require(rateFee < DENOMINATOR, "Fee numerator must less than 100%");
         RATE_FEE = rateFee;
