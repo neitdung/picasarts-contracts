@@ -95,7 +95,7 @@ contract Hub is IHub, AccessControl, ReentrancyGuard {
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
         uint256 childLength = _hubChild.length();
-        for (uint256 i = 0; i <= childLength; i++) {
+        for (uint256 i = 0; i < childLength; i++) {
             IHubChild(_hubChild.at(i)).addAcceptToken(tokenAddr);
         }
     }
@@ -106,7 +106,7 @@ contract Hub is IHub, AccessControl, ReentrancyGuard {
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
         uint256 childLength = _hubChild.length();
-        for (uint256 i = 0; i <= childLength; i++) {
+        for (uint256 i = 0; i < childLength; i++) {
             IHubChild(_hubChild.at(i)).removeToken(tokenAddr);
         }
     }
@@ -118,7 +118,7 @@ contract Hub is IHub, AccessControl, ReentrancyGuard {
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
         uint256 childLength = _hubChild.length();
-        for (uint256 i = 0; i <= childLength; i++) {
+        for (uint256 i = 0; i < childLength; i++) {
             IHubChild(_hubChild.at(i)).addWhitelistAddress(
                 whitelistAddress,
                 fee
@@ -132,7 +132,7 @@ contract Hub is IHub, AccessControl, ReentrancyGuard {
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
         uint256 childLength = _hubChild.length();
-        for (uint256 i = 0; i <= childLength; i++) {
+        for (uint256 i = 0; i < childLength; i++) {
             IHubChild(_hubChild.at(i)).removeWhitelistAddress(whitelistAddress);
         }
     }
@@ -140,7 +140,7 @@ contract Hub is IHub, AccessControl, ReentrancyGuard {
     function setRateFee(uint256 rateFee) external override onlyRole(DEFAULT_ADMIN_ROLE) {
         uint256 childLength = _hubChild.length();
         RATE_FEE = rateFee;
-        for (uint256 i = 0; i <= childLength; i++) {
+        for (uint256 i = 0; i < childLength; i++) {
             IHubChild(_hubChild.at(i)).setRateFee(rateFee);
         }
     }
