@@ -41,7 +41,27 @@ contract Hub is IHub, AccessControl, ReentrancyGuard {
         uint256 cid,
         address indexed owner,
         address indexed nftAddress,
-        string indexed metadata
+        string metadata
+    );
+    
+    event CollectionListed(
+        uint256 cid,
+        address indexed owner,
+        address indexed nftAddress,
+        string metadata
+    );
+
+    event CollectionEdited(
+        uint256 cid,
+        string metadata
+    );
+
+    event AddToken(
+        address indexed tokenAddress
+    );
+
+    event RemoveToken(
+        address indexed tokenAddress
     );
 
     modifier onlyCollectionOwner(uint256 cid) {
@@ -98,6 +118,7 @@ contract Hub is IHub, AccessControl, ReentrancyGuard {
         for (uint256 i = 0; i < childLength; i++) {
             IHubChild(_hubChild.at(i)).addAcceptToken(tokenAddr);
         }
+        emit AddToken(tokenAddr);
     }
 
     function removeToken(address tokenAddr)
@@ -109,6 +130,7 @@ contract Hub is IHub, AccessControl, ReentrancyGuard {
         for (uint256 i = 0; i < childLength; i++) {
             IHubChild(_hubChild.at(i)).removeToken(tokenAddr);
         }
+        emit RemoveToken(tokenAddr);
     }
 
     //IPlatformFee implement
@@ -193,7 +215,7 @@ contract Hub is IHub, AccessControl, ReentrancyGuard {
         uint256 itemId = _itemCount.current();
         if (itemId != 0) {
             require(
-                nftAddress == _cidToCollection[0].contractAddress,
+                nftAddress != _cidToCollection[0].contractAddress,
                 "Contract is listed"
             );
         }
@@ -209,7 +231,7 @@ contract Hub is IHub, AccessControl, ReentrancyGuard {
             msg.sender
         );
         collectionIds.push(itemId);
-        emit CollectionCreated(itemId, msg.sender, nftAddress, metadata);
+        emit CollectionListed(itemId, msg.sender, nftAddress, metadata);
     }
 
     function editMetaData(uint256 cid, string calldata newHash)
@@ -219,6 +241,7 @@ contract Hub is IHub, AccessControl, ReentrancyGuard {
         nonReentrant
     {
         _cidToCollection[cid].metadata = newHash;
+        emit CollectionEdited(cid, newHash);
     }
 
     function transferCollection(uint256 cid, address newOwner)

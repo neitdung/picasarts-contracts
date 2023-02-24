@@ -1,0 +1,801 @@
+{
+  "contractName": "IHubChild",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "tokenAddr",
+          "type": "address"
+        }
+      ],
+      "name": "addAcceptToken",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "whitelistAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "fee",
+          "type": "uint256"
+        }
+      ],
+      "name": "addWhitelistAddress",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "tokenAddr",
+          "type": "address"
+        }
+      ],
+      "name": "removeToken",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "whitelistAddress",
+          "type": "address"
+        }
+      ],
+      "name": "removeWhitelistAddress",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "rateFee",
+          "type": "uint256"
+        }
+      ],
+      "name": "setRateFee",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "hub",
+          "type": "address"
+        }
+      ],
+      "name": "setHub",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "walletAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "tokenAddress",
+          "type": "address"
+        }
+      ],
+      "name": "feeOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "tokenAddress",
+          "type": "address"
+        }
+      ],
+      "name": "getTokenFee",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getAcceptTokens",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getRateFee",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getWhitelist",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "addr",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "fee",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct IHubChild.WhitelistVars[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddr\",\"type\":\"address\"}],\"name\":\"addAcceptToken\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"whitelistAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"fee\",\"type\":\"uint256\"}],\"name\":\"addWhitelistAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"walletAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"}],\"name\":\"feeOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAcceptTokens\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getRateFee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"}],\"name\":\"getTokenFee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getWhitelist\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"addr\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"fee\",\"type\":\"uint256\"}],\"internalType\":\"struct IHubChild.WhitelistVars[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddr\",\"type\":\"address\"}],\"name\":\"removeToken\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"whitelistAddress\",\"type\":\"address\"}],\"name\":\"removeWhitelistAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"hub\",\"type\":\"address\"}],\"name\":\"setHub\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"rateFee\",\"type\":\"uint256\"}],\"name\":\"setRateFee\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interfaces/IHubChild.sol\":\"IHubChild\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/interfaces/IHub.sol\":{\"keccak256\":\"0xb8f4b0f206562b32def5b11e5d5f97730fb5db7f66721080eb53425eb3ccb2de\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8ff5bceca390feb7eeb916c38da754a7c69a0487ba050c04a8ed173ff4b51b9e\",\"dweb:/ipfs/QmbLuH82GjJTZk9kevZvYiTKnrq7HyyjsHiUTpyPdZPTBb\"]},\"project:/contracts/interfaces/IHubChild.sol\":{\"keccak256\":\"0xe92444c9c641acc88c5ce83bfbf529578442aa39ac5376aad191288bd1eb797a\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://26ee55fe1b02fbf57545488b16cbb37bf9dcc00109540ad91058679789a74ceb\",\"dweb:/ipfs/QmNtY75HQbatgEFikn2oME3BeajTQFngkdoXqJ7V9Qsqnr\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\r\n\r\npragma solidity ^0.8.0;\r\npragma abicoder v2;\r\n\r\nimport \"./IHub.sol\";\r\n\r\ninterface IHubChild is IHub {\r\n    struct WhitelistVars {\r\n        address addr;\r\n        uint256 fee;\r\n    }\r\n    function setHub(address hub) external;\r\n    function feeOf(address walletAddress, address tokenAddress)\r\n        external\r\n        view\r\n        returns (uint256);\r\n\r\n    function getTokenFee(address tokenAddress) external view returns (uint256);\r\n\r\n    function getAcceptTokens() external view returns (address[] memory);\r\n    function getRateFee() external view returns (uint256);\r\n\r\n    function getWhitelist()\r\n        external\r\n        view\r\n        returns (WhitelistVars[] memory);\r\n}\r\n",
+  "sourcePath": "G:\\Learning\\Project\\source\\picasarts-contracts\\contracts\\interfaces\\IHubChild.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/interfaces/IHubChild.sol",
+    "exportedSymbols": {
+      "IHub": [
+        12481
+      ],
+      "IHubChild": [
+        12532
+      ]
+    },
+    "id": 12533,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 12483,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "35:23:35"
+      },
+      {
+        "id": 12484,
+        "literals": [
+          "abicoder",
+          "v2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "60:19:35"
+      },
+      {
+        "absolutePath": "project:/contracts/interfaces/IHub.sol",
+        "file": "./IHub.sol",
+        "id": 12485,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 12533,
+        "sourceUnit": 12482,
+        "src": "83:20:35",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 12486,
+              "name": "IHub",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 12481,
+              "src": "130:4:35"
+            },
+            "id": 12487,
+            "nodeType": "InheritanceSpecifier",
+            "src": "130:4:35"
+          }
+        ],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "id": 12532,
+        "linearizedBaseContracts": [
+          12532,
+          12481
+        ],
+        "name": "IHubChild",
+        "nameLocation": "117:9:35",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "IHubChild.WhitelistVars",
+            "id": 12492,
+            "members": [
+              {
+                "constant": false,
+                "id": 12489,
+                "mutability": "mutable",
+                "name": "addr",
+                "nameLocation": "182:4:35",
+                "nodeType": "VariableDeclaration",
+                "scope": 12492,
+                "src": "174:12:35",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 12488,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "174:7:35",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 12491,
+                "mutability": "mutable",
+                "name": "fee",
+                "nameLocation": "205:3:35",
+                "nodeType": "VariableDeclaration",
+                "scope": 12492,
+                "src": "197:11:35",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 12490,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "197:7:35",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "WhitelistVars",
+            "nameLocation": "149:13:35",
+            "nodeType": "StructDefinition",
+            "scope": 12532,
+            "src": "142:74:35",
+            "visibility": "public"
+          },
+          {
+            "functionSelector": "31962cdc",
+            "id": 12497,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setHub",
+            "nameLocation": "231:6:35",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 12495,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12494,
+                  "mutability": "mutable",
+                  "name": "hub",
+                  "nameLocation": "246:3:35",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12497,
+                  "src": "238:11:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 12493,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "238:7:35",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "237:13:35"
+            },
+            "returnParameters": {
+              "id": 12496,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "259:0:35"
+            },
+            "scope": 12532,
+            "src": "222:38:35",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "a89eccfd",
+            "id": 12506,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "feeOf",
+            "nameLocation": "275:5:35",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 12502,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12499,
+                  "mutability": "mutable",
+                  "name": "walletAddress",
+                  "nameLocation": "289:13:35",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12506,
+                  "src": "281:21:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 12498,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "281:7:35",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 12501,
+                  "mutability": "mutable",
+                  "name": "tokenAddress",
+                  "nameLocation": "312:12:35",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12506,
+                  "src": "304:20:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 12500,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "304:7:35",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "280:45:35"
+            },
+            "returnParameters": {
+              "id": 12505,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12504,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12506,
+                  "src": "376:7:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12503,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "376:7:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "375:9:35"
+            },
+            "scope": 12532,
+            "src": "266:119:35",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "252154fa",
+            "id": 12513,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getTokenFee",
+            "nameLocation": "402:11:35",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 12509,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12508,
+                  "mutability": "mutable",
+                  "name": "tokenAddress",
+                  "nameLocation": "422:12:35",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12513,
+                  "src": "414:20:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 12507,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "414:7:35",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "413:22:35"
+            },
+            "returnParameters": {
+              "id": 12512,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12511,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12513,
+                  "src": "459:7:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12510,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "459:7:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "458:9:35"
+            },
+            "scope": 12532,
+            "src": "393:75:35",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "8563e10e",
+            "id": 12519,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getAcceptTokens",
+            "nameLocation": "485:15:35",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 12514,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "500:2:35"
+            },
+            "returnParameters": {
+              "id": 12518,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12517,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12519,
+                  "src": "526:16:35",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
+                    "typeString": "address[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 12515,
+                      "name": "address",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "526:7:35",
+                      "stateMutability": "nonpayable",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "id": 12516,
+                    "nodeType": "ArrayTypeName",
+                    "src": "526:9:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                      "typeString": "address[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "525:18:35"
+            },
+            "scope": 12532,
+            "src": "476:68:35",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "86c3b08a",
+            "id": 12524,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getRateFee",
+            "nameLocation": "559:10:35",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 12520,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "569:2:35"
+            },
+            "returnParameters": {
+              "id": 12523,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12522,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12524,
+                  "src": "595:7:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 12521,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "595:7:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "594:9:35"
+            },
+            "scope": 12532,
+            "src": "550:54:35",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "d01f63f5",
+            "id": 12531,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getWhitelist",
+            "nameLocation": "621:12:35",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 12525,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "633:2:35"
+            },
+            "returnParameters": {
+              "id": 12530,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 12529,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 12531,
+                  "src": "686:22:35",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12492_memory_ptr_$dyn_memory_ptr",
+                    "typeString": "struct IHubChild.WhitelistVars[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 12527,
+                      "nodeType": "UserDefinedTypeName",
+                      "pathNode": {
+                        "id": 12526,
+                        "name": "WhitelistVars",
+                        "nodeType": "IdentifierPath",
+                        "referencedDeclaration": 12492,
+                        "src": "686:13:35"
+                      },
+                      "referencedDeclaration": 12492,
+                      "src": "686:13:35",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_WhitelistVars_$12492_storage_ptr",
+                        "typeString": "struct IHubChild.WhitelistVars"
+                      }
+                    },
+                    "id": 12528,
+                    "nodeType": "ArrayTypeName",
+                    "src": "686:15:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12492_storage_$dyn_storage_ptr",
+                      "typeString": "struct IHubChild.WhitelistVars[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "685:24:35"
+            },
+            "scope": 12532,
+            "src": "612:98:35",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 12533,
+        "src": "107:606:35",
+        "usedErrors": []
+      }
+    ],
+    "src": "35:680:35"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.4+commit.c7e474f2.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.10",
+  "updatedAt": "2023-02-24T17:19:21.468Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

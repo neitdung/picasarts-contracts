@@ -26,7 +26,6 @@ contract Marketplace is HubChild {
         address nftContract;
         uint256 tokenId;
         address seller;
-        address owner;
         address ftContract;
         uint256 price;
         bool listed;
@@ -45,7 +44,6 @@ contract Marketplace is HubChild {
         address nftContract,
         uint256 tokenId,
         address seller,
-        address owner,
         address ftContract,
         uint256 price,
         bool auction
@@ -66,7 +64,7 @@ contract Marketplace is HubChild {
         address nftContract,
         uint256 tokenId,
         address seller,
-        address owner,
+        address buyer,
         uint256 price
     );
 
@@ -93,7 +91,6 @@ contract Marketplace is HubChild {
             nftContract,
             tokenId,
             msg.sender,
-            address(this),
             ftContract,
             price,
             true,
@@ -107,7 +104,6 @@ contract Marketplace is HubChild {
             nftContract,
             tokenId,
             msg.sender,
-            address(this),
             ftContract,
             price,
             false
@@ -139,7 +135,6 @@ contract Marketplace is HubChild {
             nftContract,
             tokenId,
             msg.sender,
-            address(this),
             ftContract,
             price,
             true,
@@ -158,7 +153,6 @@ contract Marketplace is HubChild {
             nftContract,
             tokenId,
             msg.sender,
-            address(this),
             ftContract,
             price,
             true
@@ -191,7 +185,6 @@ contract Marketplace is HubChild {
             nft.nftContract,
             nft.tokenId,
             msg.sender,
-            address(this),
             nft.ftContract,
             price,
             false
@@ -224,7 +217,6 @@ contract Marketplace is HubChild {
             nft.nftContract,
             nft.tokenId,
             msg.sender,
-            address(this),
             nft.ftContract,
             price,
             false
@@ -246,18 +238,16 @@ contract Marketplace is HubChild {
         );
 
         nft.seller = msg.sender;
-        nft.owner = address(this);
         nft.listed = true;
         nft.ftContract = ftContract;
         nft.price = price;
-
+        nft.auction = false;
         _nftsSold.decrement();
         emit NFTListed(
             itemId,
             nft.nftContract,
             nft.tokenId,
             msg.sender,
-            address(this),
             ftContract,
             price,
             false
@@ -281,7 +271,6 @@ contract Marketplace is HubChild {
         );
 
         nft.seller = msg.sender;
-        nft.owner = address(this);
         nft.listed = true;
         nft.ftContract = ftContract;
         nft.auction = true;
@@ -299,7 +288,6 @@ contract Marketplace is HubChild {
             nft.nftContract,
             nft.tokenId,
             msg.sender,
-            address(this),
             ftContract,
             price,
             true
@@ -368,8 +356,6 @@ contract Marketplace is HubChild {
             buyer,
             nft.tokenId
         );
-        // payable(_marketOwner).transfer(LISTING_FEE);
-        nft.owner = buyer;
         nft.listed = false;
 
         _nftsSold.increment();
@@ -482,7 +468,76 @@ contract Marketplace is HubChild {
             auction.bidder,
             nft.tokenId
         );
-        nft.owner = auction.bidder;
+        nft.listed = false;
+        auction.bidder = address(0);
+        auction.highestBid = 0;
+        auction.limitTime = false;
+        auction.timeEnd = 0;
+        emit NFTSold(
+            itemId,
+            nft.nftContract,
+            nft.tokenId,
+            nft.seller,
+            auction.bidder,
+            auction.highestBid
+        );
+        _nftsSold.increment();
+    }
+
+    function claimAuctionNft(uint256 itemId) public payable nonReentrant {
+        NFT storage nft = _idToNFT[itemId];
+        require(
+            nft.listed && nft.auction,
+            "Nft must be listed and not in the auction"
+        );
+        Auction storage auction = _idToAuction[itemId];
+        require(msg.sender == auction.bidder, "Sender must be bidder");
+        require(
+            auction.limitTime || (auction.timeEnd < block.timestamp),
+            "Auction must be ended and limit time"
+        );
+        uint256 fee = _feeOf(msg.sender, nft.ftContract);
+        fee = auction.highestBid.mul(fee).div(DENOMINATOR);
+        if (
+            ERC165Checker.supportsInterface(nft.nftContract, ERC2981INTERFACE)
+        ) {
+            (address creator, uint256 royaltyAmount) = IERC2981(nft.nftContract)
+                .royaltyInfo(nft.tokenId, auction.highestBid);
+            if (creator != nft.seller && royaltyAmount > 0) {
+                sendAssets(
+                    address(this),
+                    creator,
+                    nft.ftContract,
+                    royaltyAmount
+                );
+                sendAssets(
+                    address(this),
+                    nft.seller,
+                    nft.ftContract,
+                    auction.highestBid.sub(royaltyAmount.add(fee))
+                );
+            } else {
+                sendAssets(
+                    address(this),
+                    nft.seller,
+                    nft.ftContract,
+                    auction.highestBid.sub(fee)
+                );
+            }
+        } else {
+            sendAssets(
+                address(this),
+                nft.seller,
+                nft.ftContract,
+                auction.highestBid.sub(fee)
+            );
+        }
+        sendAssets(msg.sender, owner(), nft.ftContract, fee);
+        IERC721(nft.nftContract).transferFrom(
+            address(this),
+            auction.bidder,
+            nft.tokenId
+        );
         nft.listed = false;
         auction.bidder = address(0);
         auction.highestBid = 0;
@@ -555,7 +610,7 @@ contract Marketplace is HubChild {
         Auction[] memory info = new Auction[](itemCount);
 
         for (uint256 i = 0; i < totalItemCount; i++) {
-            if (_idToNFT[i].owner == msg.sender) {
+            if (_idToAuction[i].bidder == msg.sender) {
                 uint256 currentId = i;
                 NFT memory currentItem = _idToNFT[currentId];
                 Auction memory currentInfo = _idToAuction[currentId];
