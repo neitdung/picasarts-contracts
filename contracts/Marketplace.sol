@@ -168,7 +168,6 @@ contract Marketplace is HubChild {
         require(price > 0, "Price must be at least 1 wei");
         NFT storage nft = _idToNFT[itemId];
         require(msg.sender == nft.seller, "Sender must be seller");
-        require(nft.auction, "NFT must be auction");
         Auction storage auction = _idToAuction[itemId];
         nft.ftContract = ftContract;
         nft.price = price;
@@ -202,7 +201,6 @@ contract Marketplace is HubChild {
         require(price > 0, "Price must be at least 1 wei");
         NFT storage nft = _idToNFT[itemId];
         require(msg.sender == nft.seller, "Sender must be seller");
-        require(!nft.auction, "NFT must not be auction");
         Auction storage auction = _idToAuction[itemId];
         nft.auction = true;
         nft.ftContract = ftContract;
@@ -561,7 +559,7 @@ contract Marketplace is HubChild {
 
         NFT[] memory nfts = new NFT[](unsoldNftsCount);
         uint256 nftsIndex = 0;
-        for (uint256 i = 0; i < nftCount && nftsIndex<= unsoldNftsCount; i++) {
+        for (uint256 i = 1; i <= nftCount && nftsIndex<= unsoldNftsCount; i++) {
             if (_idToNFT[i].listed) {
                 nfts[nftsIndex] = _idToNFT[i];
                 nftsIndex++;
@@ -573,7 +571,7 @@ contract Marketplace is HubChild {
     function getMyListedNfts() public view returns (NFT[] memory) {
         uint256 nftCount = _nftCount.current();
         uint256 myListedNftCount = 0;
-        for (uint256 i = 0; i < nftCount; i++) {
+        for (uint256 i = 1; i <= nftCount; i++) {
             if (_idToNFT[i].seller == msg.sender && _idToNFT[i].listed) {
                 myListedNftCount++;
             }
@@ -609,7 +607,7 @@ contract Marketplace is HubChild {
         NFT[] memory items = new NFT[](itemCount);
         Auction[] memory info = new Auction[](itemCount);
 
-        for (uint256 i = 0; i < totalItemCount; i++) {
+        for (uint256 i = 1; i <= totalItemCount; i++) {
             if (_idToAuction[i].bidder == msg.sender) {
                 uint256 currentId = i;
                 NFT memory currentItem = _idToNFT[currentId];
@@ -627,7 +625,7 @@ contract Marketplace is HubChild {
 
         Auction[] memory auctions = new Auction[](nftCount);
         uint256 nftsIndex = 0;
-        for (uint256 i = 0; i < nftCount; i++) {
+        for (uint256 i = 1; i <= nftCount; i++) {
             auctions[nftsIndex] = _idToAuction[i];
             nftsIndex++;
         }
@@ -642,7 +640,7 @@ contract Marketplace is HubChild {
         NFT memory nft;
         Auction memory auction;
         uint256 nftCount = _nftCount.current();
-        for (uint256 i = 0; i < nftCount; i++) {
+        for (uint256 i = 1; i <= nftCount; i++) {
             if (
                 _idToNFT[i].nftContract == contractAddress &&
                 _idToNFT[i].tokenId == tokenId

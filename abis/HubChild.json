@@ -270,7 +270,7 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"DENOMINATOR\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"RATE_FEE\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddr\",\"type\":\"address\"}],\"name\":\"addAcceptToken\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"whitelistAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"fee\",\"type\":\"uint256\"}],\"name\":\"addWhitelistAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"walletAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"}],\"name\":\"feeOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAcceptTokens\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getRateFee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"}],\"name\":\"getTokenFee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getWhitelist\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"addr\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"fee\",\"type\":\"uint256\"}],\"internalType\":\"struct IHubChild.WhitelistVars[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"hubAddr\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddr\",\"type\":\"address\"}],\"name\":\"removeToken\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"whitelistAddress\",\"type\":\"address\"}],\"name\":\"removeWhitelistAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"hub\",\"type\":\"address\"}],\"name\":\"setHub\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"rateFee\",\"type\":\"uint256\"}],\"name\":\"setRateFee\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"owner()\":{\"details\":\"Returns the address of the current owner.\"},\"renounceOwnership()\":{\"details\":\"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.\"},\"transferOwnership(address)\":{\"details\":\"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/HubChild.sol\":\"HubChild\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/access/Ownable.sol\":{\"keccak256\":\"0x24e0364e503a9bbde94c715d26573a76f14cd2a202d45f96f52134ab806b67b9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://e12cbaa7378fd9b62280e4e1d164bedcb4399ce238f5f98fc0eefb7e50577981\",\"dweb:/ipfs/QmXRoFGUgfsaRkoPT5bxNMtSayKTQ8GZATLPXf69HcRA51\"]},\"@openzeppelin/contracts/security/ReentrancyGuard.sol\":{\"keccak256\":\"0x0e9621f60b2faabe65549f7ed0f24e8853a45c1b7990d47e8160e523683f3935\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://287a2f8d5814dd0f05f22b740f18ca8321acc21c9bd03a6cb2203ea626e2f3f2\",\"dweb:/ipfs/QmZRQv9iuwU817VuqkA2WweiaibKii69x9QxYBBEfbNEud\"]},\"@openzeppelin/contracts/utils/Context.sol\":{\"keccak256\":\"0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92\",\"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3\"]},\"@openzeppelin/contracts/utils/structs/EnumerableMap.sol\":{\"keccak256\":\"0x1ce06199047d2ceb26d64a81bc245d0f77a293674778502f7dc912831435d049\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a5e0990114d376ae68cfeec6aeff6bc903ba85a7a7bb45a8cd64630840cf3388\",\"dweb:/ipfs/QmfKgH8m6LAZqX1L3fy65vHWtoRY3VYz8kwpQtoQnKop14\"]},\"@openzeppelin/contracts/utils/structs/EnumerableSet.sol\":{\"keccak256\":\"0xacac2065b3ed1facff1163435890d4a6bcdc474e857e8e2c91ae5fb50418f723\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://acd44ec097dd623f40870ca848c31deb02dca032ec9c56bd2e52ee103d35ce6d\",\"dweb:/ipfs/Qme3CuA45xCft72RjE6s4bmhffpe2NHvHULH9fh5oPbzBv\"]},\"project:/contracts/HubChild.sol\":{\"keccak256\":\"0x9c21eced19610825113b353a1fd086b85b671b87689eccab45cdb6a233e17878\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5b34e3400aaa858ee88698e629752c3f2bafcd60a79b38b458b6585c1d11015d\",\"dweb:/ipfs/QmNdBMqRi68gqNECkSRHpwvgcAZiu6GiSx4BTmzBNwB6Zx\"]},\"project:/contracts/interfaces/IHub.sol\":{\"keccak256\":\"0xb8f4b0f206562b32def5b11e5d5f97730fb5db7f66721080eb53425eb3ccb2de\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8ff5bceca390feb7eeb916c38da754a7c69a0487ba050c04a8ed173ff4b51b9e\",\"dweb:/ipfs/QmbLuH82GjJTZk9kevZvYiTKnrq7HyyjsHiUTpyPdZPTBb\"]},\"project:/contracts/interfaces/IHubChild.sol\":{\"keccak256\":\"0xe92444c9c641acc88c5ce83bfbf529578442aa39ac5376aad191288bd1eb797a\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://26ee55fe1b02fbf57545488b16cbb37bf9dcc00109540ad91058679789a74ceb\",\"dweb:/ipfs/QmNtY75HQbatgEFikn2oME3BeajTQFngkdoXqJ7V9Qsqnr\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"DENOMINATOR\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"RATE_FEE\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddr\",\"type\":\"address\"}],\"name\":\"addAcceptToken\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"whitelistAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"fee\",\"type\":\"uint256\"}],\"name\":\"addWhitelistAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"walletAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"}],\"name\":\"feeOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAcceptTokens\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getRateFee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"}],\"name\":\"getTokenFee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getWhitelist\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"addr\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"fee\",\"type\":\"uint256\"}],\"internalType\":\"struct IHubChild.WhitelistVars[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"hubAddr\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddr\",\"type\":\"address\"}],\"name\":\"removeToken\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"whitelistAddress\",\"type\":\"address\"}],\"name\":\"removeWhitelistAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"hub\",\"type\":\"address\"}],\"name\":\"setHub\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"rateFee\",\"type\":\"uint256\"}],\"name\":\"setRateFee\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"owner()\":{\"details\":\"Returns the address of the current owner.\"},\"renounceOwnership()\":{\"details\":\"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.\"},\"transferOwnership(address)\":{\"details\":\"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/HubChild.sol\":\"HubChild\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/access/Ownable.sol\":{\"keccak256\":\"0x24e0364e503a9bbde94c715d26573a76f14cd2a202d45f96f52134ab806b67b9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://e12cbaa7378fd9b62280e4e1d164bedcb4399ce238f5f98fc0eefb7e50577981\",\"dweb:/ipfs/QmXRoFGUgfsaRkoPT5bxNMtSayKTQ8GZATLPXf69HcRA51\"]},\"@openzeppelin/contracts/security/ReentrancyGuard.sol\":{\"keccak256\":\"0x0e9621f60b2faabe65549f7ed0f24e8853a45c1b7990d47e8160e523683f3935\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://287a2f8d5814dd0f05f22b740f18ca8321acc21c9bd03a6cb2203ea626e2f3f2\",\"dweb:/ipfs/QmZRQv9iuwU817VuqkA2WweiaibKii69x9QxYBBEfbNEud\"]},\"@openzeppelin/contracts/utils/Context.sol\":{\"keccak256\":\"0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92\",\"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3\"]},\"@openzeppelin/contracts/utils/structs/EnumerableMap.sol\":{\"keccak256\":\"0x1ce06199047d2ceb26d64a81bc245d0f77a293674778502f7dc912831435d049\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a5e0990114d376ae68cfeec6aeff6bc903ba85a7a7bb45a8cd64630840cf3388\",\"dweb:/ipfs/QmfKgH8m6LAZqX1L3fy65vHWtoRY3VYz8kwpQtoQnKop14\"]},\"@openzeppelin/contracts/utils/structs/EnumerableSet.sol\":{\"keccak256\":\"0xacac2065b3ed1facff1163435890d4a6bcdc474e857e8e2c91ae5fb50418f723\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://acd44ec097dd623f40870ca848c31deb02dca032ec9c56bd2e52ee103d35ce6d\",\"dweb:/ipfs/Qme3CuA45xCft72RjE6s4bmhffpe2NHvHULH9fh5oPbzBv\"]},\"project:/contracts/HubChild.sol\":{\"keccak256\":\"0x9c21eced19610825113b353a1fd086b85b671b87689eccab45cdb6a233e17878\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5b34e3400aaa858ee88698e629752c3f2bafcd60a79b38b458b6585c1d11015d\",\"dweb:/ipfs/QmNdBMqRi68gqNECkSRHpwvgcAZiu6GiSx4BTmzBNwB6Zx\"]},\"project:/contracts/interfaces/IHub.sol\":{\"keccak256\":\"0xb8f4b0f206562b32def5b11e5d5f97730fb5db7f66721080eb53425eb3ccb2de\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8ff5bceca390feb7eeb916c38da754a7c69a0487ba050c04a8ed173ff4b51b9e\",\"dweb:/ipfs/QmbLuH82GjJTZk9kevZvYiTKnrq7HyyjsHiUTpyPdZPTBb\"]},\"project:/contracts/interfaces/IHubChild.sol\":{\"keccak256\":\"0xe92444c9c641acc88c5ce83bfbf529578442aa39ac5376aad191288bd1eb797a\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://26ee55fe1b02fbf57545488b16cbb37bf9dcc00109540ad91058679789a74ceb\",\"dweb:/ipfs/QmNtY75HQbatgEFikn2oME3BeajTQFngkdoXqJ7V9Qsqnr\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -296,10 +296,10 @@
         6879
       ],
       "IHub": [
-        12481
+        12468
       ],
       "IHubChild": [
-        12532
+        12519
       ],
       "Ownable": [
         497
@@ -330,7 +330,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 6880,
-        "sourceUnit": 12533,
+        "sourceUnit": 12520,
         "src": "60:36:29",
         "symbolAliases": [],
         "unitAlias": ""
@@ -391,7 +391,7 @@
               "id": 6518,
               "name": "IHubChild",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 12532,
+              "referencedDeclaration": 12519,
               "src": "382:9:29"
             },
             "id": 6519,
@@ -432,8 +432,8 @@
           556,
           497,
           3360,
-          12532,
-          12481
+          12519,
+          12468
         ],
         "name": "HubChild",
         "nameLocation": "370:8:29",
@@ -1106,7 +1106,7 @@
           },
           {
             "baseFunctions": [
-              12497
+              12484
             ],
             "body": {
               "id": 6589,
@@ -1235,7 +1235,7 @@
           },
           {
             "baseFunctions": [
-              12458
+              12445
             ],
             "body": {
               "id": 6604,
@@ -1389,7 +1389,7 @@
           },
           {
             "baseFunctions": [
-              12463
+              12450
             ],
             "body": {
               "id": 6619,
@@ -1543,7 +1543,7 @@
           },
           {
             "baseFunctions": [
-              12524
+              12511
             ],
             "body": {
               "id": 6628,
@@ -1632,7 +1632,7 @@
           },
           {
             "baseFunctions": [
-              12470
+              12457
             ],
             "body": {
               "id": 6646,
@@ -1829,7 +1829,7 @@
           },
           {
             "baseFunctions": [
-              12475
+              12462
             ],
             "body": {
               "id": 6661,
@@ -1983,7 +1983,7 @@
           },
           {
             "baseFunctions": [
-              12531
+              12518
             ],
             "body": {
               "id": 6720,
@@ -2089,7 +2089,7 @@
                       "stateVariable": false,
                       "storageLocation": "memory",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12492_memory_ptr_$dyn_memory_ptr",
+                        "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12479_memory_ptr_$dyn_memory_ptr",
                         "typeString": "struct IHubChild.WhitelistVars[]"
                       },
                       "typeName": {
@@ -2100,13 +2100,13 @@
                             "id": 6677,
                             "name": "WhitelistVars",
                             "nodeType": "IdentifierPath",
-                            "referencedDeclaration": 12492,
+                            "referencedDeclaration": 12479,
                             "src": "2154:13:29"
                           },
-                          "referencedDeclaration": 12492,
+                          "referencedDeclaration": 12479,
                           "src": "2154:13:29",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_WhitelistVars_$12492_storage_ptr",
+                            "typeIdentifier": "t_struct$_WhitelistVars_$12479_storage_ptr",
                             "typeString": "struct IHubChild.WhitelistVars"
                           }
                         },
@@ -2114,7 +2114,7 @@
                         "nodeType": "ArrayTypeName",
                         "src": "2154:15:29",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12492_storage_$dyn_storage_ptr",
+                          "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12479_storage_$dyn_storage_ptr",
                           "typeString": "struct IHubChild.WhitelistVars[]"
                         }
                       },
@@ -2152,7 +2152,7 @@
                       "nodeType": "NewExpression",
                       "src": "2184:19:29",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_objectcreation_pure$_t_uint256_$returns$_t_array$_t_struct$_WhitelistVars_$12492_memory_ptr_$dyn_memory_ptr_$",
+                        "typeIdentifier": "t_function_objectcreation_pure$_t_uint256_$returns$_t_array$_t_struct$_WhitelistVars_$12479_memory_ptr_$dyn_memory_ptr_$",
                         "typeString": "function (uint256) pure returns (struct IHubChild.WhitelistVars memory[] memory)"
                       },
                       "typeName": {
@@ -2163,13 +2163,13 @@
                             "id": 6681,
                             "name": "WhitelistVars",
                             "nodeType": "IdentifierPath",
-                            "referencedDeclaration": 12492,
+                            "referencedDeclaration": 12479,
                             "src": "2188:13:29"
                           },
-                          "referencedDeclaration": 12492,
+                          "referencedDeclaration": 12479,
                           "src": "2188:13:29",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_WhitelistVars_$12492_storage_ptr",
+                            "typeIdentifier": "t_struct$_WhitelistVars_$12479_storage_ptr",
                             "typeString": "struct IHubChild.WhitelistVars"
                           }
                         },
@@ -2177,7 +2177,7 @@
                         "nodeType": "ArrayTypeName",
                         "src": "2188:15:29",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12492_storage_$dyn_storage_ptr",
+                          "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12479_storage_$dyn_storage_ptr",
                           "typeString": "struct IHubChild.WhitelistVars[]"
                         }
                       }
@@ -2193,7 +2193,7 @@
                     "src": "2184:24:29",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12492_memory_ptr_$dyn_memory_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12479_memory_ptr_$dyn_memory_ptr",
                       "typeString": "struct IHubChild.WhitelistVars memory[] memory"
                     }
                   },
@@ -2351,7 +2351,7 @@
                               "referencedDeclaration": 6680,
                               "src": "2339:4:29",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12492_memory_ptr_$dyn_memory_ptr",
+                                "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12479_memory_ptr_$dyn_memory_ptr",
                                 "typeString": "struct IHubChild.WhitelistVars memory[] memory"
                               }
                             },
@@ -2375,7 +2375,7 @@
                             "nodeType": "IndexAccess",
                             "src": "2339:7:29",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_WhitelistVars_$12492_memory_ptr",
+                              "typeIdentifier": "t_struct$_WhitelistVars_$12479_memory_ptr",
                               "typeString": "struct IHubChild.WhitelistVars memory"
                             }
                           },
@@ -2423,10 +2423,10 @@
                               "name": "WhitelistVars",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 12492,
+                              "referencedDeclaration": 12479,
                               "src": "2349:13:29",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_type$_t_struct$_WhitelistVars_$12492_storage_ptr_$",
+                                "typeIdentifier": "t_type$_t_struct$_WhitelistVars_$12479_storage_ptr_$",
                                 "typeString": "type(struct IHubChild.WhitelistVars storage pointer)"
                               }
                             },
@@ -2441,13 +2441,13 @@
                             "src": "2349:24:29",
                             "tryCall": false,
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_WhitelistVars_$12492_memory_ptr",
+                              "typeIdentifier": "t_struct$_WhitelistVars_$12479_memory_ptr",
                               "typeString": "struct IHubChild.WhitelistVars memory"
                             }
                           },
                           "src": "2339:34:29",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_WhitelistVars_$12492_memory_ptr",
+                            "typeIdentifier": "t_struct$_WhitelistVars_$12479_memory_ptr",
                             "typeString": "struct IHubChild.WhitelistVars memory"
                           }
                         },
@@ -2597,7 +2597,7 @@
                     "referencedDeclaration": 6680,
                     "src": "2402:4:29",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12492_memory_ptr_$dyn_memory_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12479_memory_ptr_$dyn_memory_ptr",
                       "typeString": "struct IHubChild.WhitelistVars memory[] memory"
                     }
                   },
@@ -2644,7 +2644,7 @@
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12492_memory_ptr_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12479_memory_ptr_$dyn_memory_ptr",
                     "typeString": "struct IHubChild.WhitelistVars[]"
                   },
                   "typeName": {
@@ -2655,13 +2655,13 @@
                         "id": 6665,
                         "name": "WhitelistVars",
                         "nodeType": "IdentifierPath",
-                        "referencedDeclaration": 12492,
+                        "referencedDeclaration": 12479,
                         "src": "2068:13:29"
                       },
-                      "referencedDeclaration": 12492,
+                      "referencedDeclaration": 12479,
                       "src": "2068:13:29",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_WhitelistVars_$12492_storage_ptr",
+                        "typeIdentifier": "t_struct$_WhitelistVars_$12479_storage_ptr",
                         "typeString": "struct IHubChild.WhitelistVars"
                       }
                     },
@@ -2669,7 +2669,7 @@
                     "nodeType": "ArrayTypeName",
                     "src": "2068:15:29",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12492_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12479_storage_$dyn_storage_ptr",
                       "typeString": "struct IHubChild.WhitelistVars[]"
                     }
                   },
@@ -2686,7 +2686,7 @@
           },
           {
             "baseFunctions": [
-              12480
+              12467
             ],
             "body": {
               "id": 6740,
@@ -3614,7 +3614,7 @@
           },
           {
             "baseFunctions": [
-              12506
+              12493
             ],
             "body": {
               "id": 6815,
@@ -3812,7 +3812,7 @@
           },
           {
             "baseFunctions": [
-              12513
+              12500
             ],
             "body": {
               "id": 6829,
@@ -3981,7 +3981,7 @@
           },
           {
             "baseFunctions": [
-              12519
+              12506
             ],
             "body": {
               "id": 6877,
@@ -4547,7 +4547,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.10",
-  "updatedAt": "2023-02-24T17:19:21.426Z",
+  "updatedAt": "2023-02-24T18:18:06.495Z",
   "devdoc": {
     "kind": "dev",
     "methods": {

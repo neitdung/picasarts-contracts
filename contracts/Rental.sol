@@ -68,7 +68,7 @@ contract Rental is HubChild {
 
     modifier rentAvailable(uint256 itemId) {
         require(
-            _idToCovenant[itemId].status != CovenantStatus.LISTING ||
+            _idToCovenant[itemId].status == CovenantStatus.LISTING ||
                 (_idToProfile[itemId].startTime +
                     _idToProfile[itemId].duration *
                     _idToCovenant[itemId].cycleTime >
@@ -522,7 +522,7 @@ contract Rental is HubChild {
 
         Covenant[] memory covenants = new Covenant[](covenantCount);
         uint256 covenantIndex = 0;
-        for (uint256 i = 0; i < covenantCount; i++) {
+        for (uint256 i = 1; i <= covenantCount; i++) {
             covenants[covenantIndex] = _idToCovenant[i];
             covenantIndex++;
         }
@@ -536,7 +536,7 @@ contract Rental is HubChild {
     {
         uint256 covenantCount = _itemCount.current();
         uint256 myListedCovenantCount = 0;
-        for (uint256 i = 0; i < covenantCount; i++) {
+        for (uint256 i = 1; i <= covenantCount; i++) {
             if (
                 _idToProfile[i].borrower == addr ||
                 _idToCovenant[i].lender == addr
@@ -547,7 +547,7 @@ contract Rental is HubChild {
 
         Covenant[] memory covenants = new Covenant[](covenantCount);
         uint256 covenantIndex = 0;
-        for (uint256 i = 0; i < myListedCovenantCount; i++) {
+        for (uint256 i = 1; i <= myListedCovenantCount; i++) {
             if (
                 _idToProfile[i].borrower == addr ||
                 _idToCovenant[i].lender == addr
@@ -576,7 +576,7 @@ contract Rental is HubChild {
     {
         Covenant memory covenant;
         uint256 cCount = _itemCount.current();
-        for (uint256 i = 0; i < cCount; i++) {
+        for (uint256 i = 1; i <= cCount; i++) {
             if (
                 _idToCovenant[i].nftContract == contractAddress &&
                 _idToCovenant[i].tokenId == tokenId
