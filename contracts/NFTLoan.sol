@@ -37,7 +37,7 @@ contract NFTLoan is HubChild {
         uint256 amount;
         uint256 profit;
         uint256 timeExpired;
-        uint256 timeDays;
+        uint256 duration;
         CovenantStatus status;
         address borrower;
         address lender;
@@ -57,7 +57,7 @@ contract NFTLoan is HubChild {
         address ftContract,
         uint256 amount,
         uint256 profit,
-        uint256 timeDays,
+        uint256 duration,
         uint8 status,
         address borrower,
         address lender
@@ -70,7 +70,7 @@ contract NFTLoan is HubChild {
         address ftContract,
         uint256 amount,
         uint256 profit,
-        uint256 timeDays
+        uint256 duration
     );
 
     event CovenantPayOff(
@@ -123,13 +123,13 @@ contract NFTLoan is HubChild {
     }
 
     // List the NFT on the marketplace
-    function listCovenant(
+    function list(
         address nftContract,
         uint256 tokenId,
         address ftContract,
         uint256 amount,
         uint256 profit,
-        uint256 timeDays
+        uint256 duration
     ) public nonReentrant {
         require(
             amount > 0 && profit > 0,
@@ -151,7 +151,7 @@ contract NFTLoan is HubChild {
             amount,
             profit,
             0,
-            timeDays,
+            duration,
             CovenantStatus.LISTING,
             msg.sender,
             address(0),
@@ -167,7 +167,7 @@ contract NFTLoan is HubChild {
             ftContract,
             amount,
             profit,
-            timeDays,
+            duration,
             uint8(CovenantStatus.LISTING),
             msg.sender,
             address(0)
@@ -175,7 +175,7 @@ contract NFTLoan is HubChild {
         _itemCount.increment();
     }
 
-    function endListedItem(uint256 itemId)
+    function unlist(uint256 itemId)
         external
         onlyBorrower(itemId)
         nonReentrant
@@ -195,12 +195,12 @@ contract NFTLoan is HubChild {
         emit CovenantUnlisted(itemId);
     }
 
-    function editListingItem(
+    function edit(
         uint256 itemId,
         address ftContract,
         uint256 amount,
         uint256 profit,
-        uint256 timeDays
+        uint256 duration
     ) external onlyBorrower(itemId) nonReentrant {
         require(
             _idToCovenant[itemId].status == CovenantStatus.LISTING,
@@ -211,11 +211,11 @@ contract NFTLoan is HubChild {
         loanCovenant.ftContract = ftContract;
         loanCovenant.amount = amount;
         loanCovenant.profit = profit;
-        loanCovenant.timeDays = timeDays;
-        emit CovenantEdited(itemId, ftContract, amount, profit, timeDays);
+        loanCovenant.duration = duration;
+        emit CovenantEdited(itemId, ftContract, amount, profit, duration);
     }
 
-    function editProposal(
+    function extend(
         uint256 itemId,
         uint256 profit,
         uint256 timeAdd
@@ -228,12 +228,12 @@ contract NFTLoan is HubChild {
 
         proposal.profit = profit;
         proposal.timeExpired = _idToCovenant[itemId].timeExpired.add(
-            timeAdd.mul(1 minutes)
+            timeAdd
         );
         emit ProposalEdited(itemId, profit, proposal.timeExpired);
     }
 
-    function acceptProposal(uint256 itemId)
+    function accept(uint256 itemId)
         external
         onlyLender(itemId)
         nonReentrant
@@ -260,7 +260,7 @@ contract NFTLoan is HubChild {
         );
     }
 
-    function acceptCovenant(uint256 itemId) public payable nonReentrant {
+    function lend(uint256 itemId) public payable nonReentrant {
         require(
             _idToCovenant[itemId].borrower != msg.sender,
             "Sender must be not borrower"
@@ -287,8 +287,8 @@ contract NFTLoan is HubChild {
         );
 
         loanCovenant.lender = msg.sender;
-        uint256 timeAdd = loanCovenant.timeDays;
-        loanCovenant.timeExpired = timeAdd.mul(1 minutes).add(block.timestamp);
+        uint256 timeAdd = loanCovenant.duration;
+        loanCovenant.timeExpired = timeAdd+block.timestamp;
         loanCovenant.status = CovenantStatus.LOCKED;
         _loanAccepted[msg.sender] = _loanAccepted[msg.sender].add(1);
         emit CovenantAccept(
@@ -301,7 +301,7 @@ contract NFTLoan is HubChild {
         );
     }
 
-    function payOff(uint256 itemId)
+    function payoff(uint256 itemId)
         external
         payable
         onlyBorrower(itemId)
@@ -362,7 +362,7 @@ contract NFTLoan is HubChild {
             );
         }
 
-        sendAssets(msg.sender, owner(), loanCovenant.ftContract, fee);
+        sendAssets(msg.sender, hubAddr, loanCovenant.ftContract, fee);
 
         IERC721(loanCovenant.nftContract).transferFrom(
             address(this),
@@ -471,9 +471,11 @@ contract NFTLoan is HubChild {
     function getLoanData(address contractAddress, uint256 tokenId)
         public
         view
-        returns (Covenant memory)
+        returns (Covenant memory, Proposal memory)
     {
         Covenant memory covenant;
+        Proposal memory proposal;
+
         uint256 cCount = _itemCount.current();
         for (uint256 i = 0; i < cCount; i++) {
             if (
@@ -482,11 +484,12 @@ contract NFTLoan is HubChild {
                 _idToCovenant[i].isLatest
             ) {
                 covenant = _idToCovenant[i];
+                proposal = _idToProposal[i];
                 break;
             }
         }
 
-        return covenant;
+        return (covenant, proposal);
     }
 
     function sendAssets(

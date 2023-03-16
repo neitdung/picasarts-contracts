@@ -35,7 +35,6 @@ contract Marketplace is HubChild {
     struct Auction {
         address bidder;
         uint256 highestBid;
-        bool limitTime;
         uint256 timeEnd;
     }
 
@@ -74,7 +73,7 @@ contract Marketplace is HubChild {
     }
 
     // List the NFT on the marketplace
-    function listNft(
+    function list(
         address nftContract,
         address ftContract,
         uint256 tokenId,
@@ -97,7 +96,7 @@ contract Marketplace is HubChild {
             false
         );
 
-        _idToAuction[itemId] = Auction(address(0), price, false, 0);
+        _idToAuction[itemId] = Auction(address(0), price, 0);
 
         emit NFTListed(
             itemId,
@@ -111,13 +110,12 @@ contract Marketplace is HubChild {
     }
 
     // List the NFT on the marketplace
-    function listAuctionNft(
+    function bidding(
         address nftContract,
         address ftContract,
         uint256 tokenId,
         uint256 price,
-        bool limitTime,
-        uint256 timeHour
+        uint256 duration
     ) public isAcceptToken(ftContract) nonReentrant {
         require(price > 0, "Price must be at least 1 wei");
         require(
@@ -144,8 +142,7 @@ contract Marketplace is HubChild {
         _idToAuction[itemId] = Auction(
             address(0),
             price,
-            limitTime,
-            limitTime ? block.timestamp.add(timeHour.mul(1 hours)) : 0
+            duration > 0 ? (block.timestamp + duration) : 0
         );
 
         emit NFTListed(
@@ -159,56 +156,31 @@ contract Marketplace is HubChild {
         );
     }
 
-    // Switch auction to simple listed
-    function switchToListed(
-        uint256 itemId,
-        address ftContract,
-        uint256 price
-    ) public isAcceptToken(ftContract) nonReentrant {
-        require(price > 0, "Price must be at least 1 wei");
-        NFT storage nft = _idToNFT[itemId];
-        require(msg.sender == nft.seller, "Sender must be seller");
-        Auction storage auction = _idToAuction[itemId];
-        nft.ftContract = ftContract;
-        nft.price = price;
-        nft.auction = false;
-        if (auction.bidder != address(0)) {
-            payable(auction.bidder).transfer(auction.highestBid);
-        }
-        auction.bidder = address(0);
-        auction.highestBid = 0;
-        auction.limitTime = false;
-        auction.timeEnd = 0;
-        emit NFTListed(
-            itemId,
-            nft.nftContract,
-            nft.tokenId,
-            msg.sender,
-            nft.ftContract,
-            price,
-            false
-        );
-    }
-
-    // Resell an NFT purchased from the marketplace
-    function switchToAuction(
+    function edit(
         uint256 itemId,
         address ftContract,
         uint256 price,
-        bool limitTime,
-        uint256 timeHour
+        bool isAuction,
+        uint256 duration
     ) public isAcceptToken(ftContract) nonReentrant {
         require(price > 0, "Price must be at least 1 wei");
         NFT storage nft = _idToNFT[itemId];
         require(msg.sender == nft.seller, "Sender must be seller");
+        if (_idToNFT[itemId].auction) {
+            require(_idToAuction[itemId].bidder == address(0) && (block.timestamp > _idToAuction[itemId].timeEnd), "Item is bidding");
+        }
         Auction storage auction = _idToAuction[itemId];
-        nft.auction = true;
+        if (isAuction) {
+            auction.highestBid = price;
+            auction.timeEnd = (duration > 0) ? (block.timestamp+ duration): 0;
+        }  else {
+            auction.bidder = address(0);
+            auction.highestBid = 0;
+            auction.timeEnd = duration;
+        }
         nft.ftContract = ftContract;
-        auction.highestBid = price;
-        auction.limitTime = limitTime;
-        auction.timeEnd = limitTime
-            ? block.timestamp.add(timeHour.mul(1 hours))
-            : 0;
+        nft.price = price;
+        nft.auction = isAuction;
 
         emit NFTListed(
             itemId,
@@ -217,12 +189,12 @@ contract Marketplace is HubChild {
             msg.sender,
             nft.ftContract,
             price,
-            false
+            isAuction
         );
     }
 
     // Resell an NFT purchased from the marketplace
-    function relistNft(
+    function relist(
         uint256 itemId,
         address ftContract,
         uint256 price
@@ -253,12 +225,11 @@ contract Marketplace is HubChild {
     }
 
     // Reauction an NFT purchased from the marketplace
-    function reauctionNft(
+    function reauction(
         uint256 itemId,
         address ftContract,
         uint256 price,
-        bool limitTime,
-        uint256 timeHour
+        uint256 duration
     ) public isAcceptToken(ftContract) nonReentrant {
         require(price > 0, "Price must be at least 1 wei");
         NFT storage nft = _idToNFT[itemId];
@@ -276,9 +247,8 @@ contract Marketplace is HubChild {
 
         Auction storage auction = _idToAuction[itemId];
         auction.highestBid = price;
-        auction.limitTime = limitTime;
-        auction.timeEnd = limitTime
-            ? block.timestamp.add(timeHour.mul(1 hours))
+        auction.timeEnd = duration > 0
+            ? (block.timestamp + duration)
             : 0;
 
         emit NFTListed(
@@ -292,13 +262,11 @@ contract Marketplace is HubChild {
         );
     }
 
-    function unlistItem(uint256 itemId) external nonReentrant {
+    function unlist(uint256 itemId) external nonReentrant {
         require(_idToNFT[itemId].seller == msg.sender, "Sender is not lister");
+
         if (_idToNFT[itemId].auction) {
-            Auction storage info = _idToAuction[itemId];
-            if (info.highestBid > 0) {
-                payable(info.bidder).transfer(info.highestBid);
-            }
+            require(_idToAuction[itemId].bidder == address(0) && block.timestamp > _idToAuction[itemId].timeEnd, "Item is bidding");
             delete _idToAuction[itemId];
         }
         IERC721(_idToNFT[itemId].nftContract).transferFrom(
@@ -313,7 +281,7 @@ contract Marketplace is HubChild {
     }
 
     // Buy an NFT
-    function buyNft(uint256 itemId) public payable nonReentrant {
+    function buy(uint256 itemId) public payable nonReentrant {
         NFT storage nft = _idToNFT[itemId];
         if (nft.ftContract == address(0)) {
             require(
@@ -334,6 +302,7 @@ contract Marketplace is HubChild {
             (address creator, uint256 royaltyAmount) = IERC2981(nft.nftContract)
                 .royaltyInfo(nft.tokenId, nft.price);
             if (creator != nft.seller && royaltyAmount > 0) {
+                if (nft.ftContract)
                 sendAssets(msg.sender, creator, nft.ftContract, royaltyAmount);
                 sendAssets(
                     msg.sender,
@@ -347,7 +316,7 @@ contract Marketplace is HubChild {
         } else {
             sendAssets(msg.sender, nft.seller, nft.ftContract, nft.price.sub(fee));
         }
-        sendAssets(msg.sender, owner(), nft.ftContract, fee);
+        sendAssets(msg.sender, hubAddr, nft.ftContract, fee);
 
         IERC721(nft.nftContract).transferFrom(
             address(this),
@@ -367,7 +336,7 @@ contract Marketplace is HubChild {
         );
     }
 
-    function addAuctionNft(uint256 itemId, uint256 value)
+    function addAuction(uint256 itemId, uint256 value)
         public
         payable
         nonReentrant
@@ -384,7 +353,7 @@ contract Marketplace is HubChild {
             "Sender must be not seller or highest bidder"
         );
         require(
-            !auction.limitTime || (auction.timeEnd > block.timestamp),
+            auction.timeEnd == 0 || (auction.timeEnd > block.timestamp),
             "Auction has already ended"
         );
         require(
@@ -412,7 +381,7 @@ contract Marketplace is HubChild {
         emit NFTAddAuction(itemId, nft.nftContract, nft.tokenId, bidder, value);
     }
 
-    function acceptAuctionNft(uint256 itemId) public payable nonReentrant {
+    function acceptAuction(uint256 itemId) public payable nonReentrant {
         NFT storage nft = _idToNFT[itemId];
         require(
             nft.listed && nft.auction,
@@ -421,7 +390,7 @@ contract Marketplace is HubChild {
         Auction storage auction = _idToAuction[itemId];
         require(msg.sender == nft.seller, "Sender must be seller");
         require(
-            !auction.limitTime || (auction.timeEnd < block.timestamp),
+            auction.timeEnd == 0 || (auction.timeEnd < block.timestamp),
             "Auction must be ended or not limit time"
         );
         uint256 fee = _feeOf(msg.sender, nft.ftContract);
@@ -460,7 +429,7 @@ contract Marketplace is HubChild {
                 auction.highestBid.sub(fee)
             );
         }
-        sendAssets(msg.sender, owner(), nft.ftContract, fee);
+        sendAssets(address(this), hubAddr, nft.ftContract, fee);
         IERC721(nft.nftContract).transferFrom(
             address(this),
             auction.bidder,
@@ -469,7 +438,6 @@ contract Marketplace is HubChild {
         nft.listed = false;
         auction.bidder = address(0);
         auction.highestBid = 0;
-        auction.limitTime = false;
         auction.timeEnd = 0;
         emit NFTSold(
             itemId,
@@ -482,7 +450,7 @@ contract Marketplace is HubChild {
         _nftsSold.increment();
     }
 
-    function claimAuctionNft(uint256 itemId) public payable nonReentrant {
+    function claimAuction(uint256 itemId) public payable nonReentrant {
         NFT storage nft = _idToNFT[itemId];
         require(
             nft.listed && nft.auction,
@@ -491,11 +459,11 @@ contract Marketplace is HubChild {
         Auction storage auction = _idToAuction[itemId];
         require(msg.sender == auction.bidder, "Sender must be bidder");
         require(
-            auction.limitTime || (auction.timeEnd < block.timestamp),
+            auction.timeEnd != 0 && (auction.timeEnd < block.timestamp),
             "Auction must be ended and limit time"
         );
         uint256 fee = _feeOf(msg.sender, nft.ftContract);
-        fee = auction.highestBid.mul(fee).div(DENOMINATOR);
+        fee = auction.highestBid * fee / DENOMINATOR;
         if (
             ERC165Checker.supportsInterface(nft.nftContract, ERC2981INTERFACE)
         ) {
@@ -512,14 +480,14 @@ contract Marketplace is HubChild {
                     address(this),
                     nft.seller,
                     nft.ftContract,
-                    auction.highestBid.sub(royaltyAmount.add(fee))
+                    auction.highestBid - royaltyAmount - fee
                 );
             } else {
                 sendAssets(
                     address(this),
                     nft.seller,
                     nft.ftContract,
-                    auction.highestBid.sub(fee)
+                    auction.highestBid - fee
                 );
             }
         } else {
@@ -527,10 +495,10 @@ contract Marketplace is HubChild {
                 address(this),
                 nft.seller,
                 nft.ftContract,
-                auction.highestBid.sub(fee)
+                auction.highestBid - fee
             );
         }
-        sendAssets(msg.sender, owner(), nft.ftContract, fee);
+        sendAssets(address(this), hubAddr, nft.ftContract, fee);
         IERC721(nft.nftContract).transferFrom(
             address(this),
             auction.bidder,
@@ -539,7 +507,6 @@ contract Marketplace is HubChild {
         nft.listed = false;
         auction.bidder = address(0);
         auction.highestBid = 0;
-        auction.limitTime = false;
         auction.timeEnd = 0;
         emit NFTSold(
             itemId,
@@ -660,14 +627,10 @@ contract Marketplace is HubChild {
         address ftToken,
         uint256 value
     ) private {
-        if (ftToken == address(0)) {
-            payable(to).transfer(value);
+        if (from != address(this)) {
+            IERC20(ftToken).transferFrom(from, to, value);
         } else {
-            if (from != address(this)) {
-                IERC20(ftToken).transferFrom(from, to, value);
-            } else {
-                IERC20(ftToken).transfer(to, value);
-            }
+            IERC20(ftToken).transfer(to, value);
         }
     }
 }

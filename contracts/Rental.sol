@@ -45,6 +45,11 @@ contract Rental is HubChild {
         address lender;
     }
 
+    struct CovenantData {
+        Covenant config;
+        CovenantProfile profile;
+    }
+
     constructor(uint256 fee, address hub) {
         RATE_FEE = fee;
         setHub(hub);
@@ -71,7 +76,7 @@ contract Rental is HubChild {
             _idToCovenant[itemId].status == CovenantStatus.LISTING ||
                 (_idToProfile[itemId].startTime +
                     _idToProfile[itemId].duration *
-                    _idToCovenant[itemId].cycleTime >
+                    _idToCovenant[itemId].cycleTime <
                     block.timestamp &&
                     _idToCovenant[itemId].status == CovenantStatus.RENTING),
             "Not time for rent"
@@ -211,7 +216,7 @@ contract Rental is HubChild {
             require(
                 _idToProfile[itemId].startTime +
                     _idToProfile[itemId].duration *
-                    _idToCovenant[itemId].cycleTime >
+                    _idToCovenant[itemId].cycleTime <
                     block.timestamp,
                 "Rental covenant must be ended"
             );
@@ -373,9 +378,9 @@ contract Rental is HubChild {
         }
         sendAssets(
             address(this),
-            owner(),
+            hubAddr,
             rentalCovenant.ftContract,
-            amount - fee
+            fee
         );
         IERC4907(rentalCovenant.nftContract).setUser(
             rentalCovenant.tokenId,
@@ -396,7 +401,7 @@ contract Rental is HubChild {
         internalWithdraw(itemId);
     }
 
-    function internalWithdraw(uint256 itemId) private nonReentrant {
+    function internalWithdraw(uint256 itemId) private {
         uint256 currentTime = block.timestamp;
         uint256 currentCycle = (currentTime - _idToProfile[itemId].startTime) /
             _idToCovenant[itemId].cycleTime;
@@ -454,9 +459,9 @@ contract Rental is HubChild {
         }
         sendAssets(
             address(this),
-            owner(),
+            hubAddr,
             rentalCovenant.ftContract,
-            amount - fee
+            fee
         );
 
         _idToProfile[itemId].withdrawRound = currentCycle;
@@ -517,13 +522,13 @@ contract Rental is HubChild {
         rentalCovenant.status = CovenantStatus.UNLISTED;
     }
 
-    function getCovenants() public view returns (Covenant[] memory) {
+    function getCovenants() public view returns (CovenantData[] memory) {
         uint256 covenantCount = _itemCount.current();
 
-        Covenant[] memory covenants = new Covenant[](covenantCount);
+        CovenantData[] memory covenants = new CovenantData[](covenantCount);
         uint256 covenantIndex = 0;
         for (uint256 i = 1; i <= covenantCount; i++) {
-            covenants[covenantIndex] = _idToCovenant[i];
+            covenants[covenantIndex] = CovenantData(_idToCovenant[i], _idToProfile[i]);
             covenantIndex++;
         }
         return covenants;
@@ -532,7 +537,7 @@ contract Rental is HubChild {
     function getCovenantsByAddress(address addr)
         public
         view
-        returns (Covenant[] memory)
+        returns (CovenantData[] memory)
     {
         uint256 covenantCount = _itemCount.current();
         uint256 myListedCovenantCount = 0;
@@ -545,14 +550,14 @@ contract Rental is HubChild {
             }
         }
 
-        Covenant[] memory covenants = new Covenant[](covenantCount);
+        CovenantData[] memory covenants = new CovenantData[](covenantCount);
         uint256 covenantIndex = 0;
         for (uint256 i = 1; i <= myListedCovenantCount; i++) {
             if (
                 _idToProfile[i].borrower == addr ||
                 _idToCovenant[i].lender == addr
             ) {
-                covenants[covenantIndex] = _idToCovenant[i];
+                covenants[covenantIndex] = CovenantData(_idToCovenant[i], _idToProfile[i]);
                 covenantIndex++;
             }
         }
@@ -572,9 +577,10 @@ contract Rental is HubChild {
     function getRentalData(address contractAddress, uint256 tokenId)
         public
         view
-        returns (Covenant memory)
+        returns (Covenant memory, CovenantProfile memory)
     {
         Covenant memory covenant;
+        CovenantProfile memory profile;
         uint256 cCount = _itemCount.current();
         for (uint256 i = 1; i <= cCount; i++) {
             if (
@@ -582,11 +588,12 @@ contract Rental is HubChild {
                 _idToCovenant[i].tokenId == tokenId
             ) {
                 covenant = _idToCovenant[i];
+                profile = _idToProfile[i];
                 break;
             }
         }
 
-        return covenant;
+        return (covenant, profile);
     }
 
     function sendAssets(
