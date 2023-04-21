@@ -1,13 +1,5 @@
-# Sample Hardhat Project
+There are smart contract for [picasarts-multichain](https://github.com/neitgnud/picasarts-multichain)
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
-
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
-```
+Details:
+ - [Slide](https://docs.google.com/presentation/d/1mPhibvwcayLWMY1jU6uW8ysFEgjuoN3X/edit?usp=sharing&ouid=114523308158002928688&rtpof=true&sd=true)
+ - [Thesis](https://drive.google.com/file/d/1N1DSy-r-JhNktSGR5e7oX7XnTSR3omLT/view?usp=sharing)
