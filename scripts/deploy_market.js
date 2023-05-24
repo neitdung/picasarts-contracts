@@ -16,7 +16,14 @@ async function main() {
         ...config,
         market: market.address,
     }
+    console.log(market.address)
     let data = JSON.stringify(dataLog);
     fs.writeFileSync('config.json', data);
-    await rental.deployed();
 }
+
+// We recommend this pattern to be able to use async/await everywhere
+// and properly handle errors.
+main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+});

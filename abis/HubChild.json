@@ -296,10 +296,10 @@
         6879
       ],
       "IHub": [
-        12385
+        12381
       ],
       "IHubChild": [
-        12436
+        12432
       ],
       "Ownable": [
         497
@@ -330,7 +330,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 6880,
-        "sourceUnit": 12437,
+        "sourceUnit": 12433,
         "src": "60:36:29",
         "symbolAliases": [],
         "unitAlias": ""
@@ -391,7 +391,7 @@
               "id": 6518,
               "name": "IHubChild",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 12436,
+              "referencedDeclaration": 12432,
               "src": "382:9:29"
             },
             "id": 6519,
@@ -432,8 +432,8 @@
           556,
           497,
           3360,
-          12436,
-          12385
+          12432,
+          12381
         ],
         "name": "HubChild",
         "nameLocation": "370:8:29",
@@ -1106,7 +1106,7 @@
           },
           {
             "baseFunctions": [
-              12401
+              12397
             ],
             "body": {
               "id": 6589,
@@ -1235,7 +1235,7 @@
           },
           {
             "baseFunctions": [
-              12362
+              12358
             ],
             "body": {
               "id": 6604,
@@ -1389,7 +1389,7 @@
           },
           {
             "baseFunctions": [
-              12367
+              12363
             ],
             "body": {
               "id": 6619,
@@ -1543,7 +1543,7 @@
           },
           {
             "baseFunctions": [
-              12428
+              12424
             ],
             "body": {
               "id": 6628,
@@ -1632,7 +1632,7 @@
           },
           {
             "baseFunctions": [
-              12374
+              12370
             ],
             "body": {
               "id": 6646,
@@ -1829,7 +1829,7 @@
           },
           {
             "baseFunctions": [
-              12379
+              12375
             ],
             "body": {
               "id": 6661,
@@ -1983,7 +1983,7 @@
           },
           {
             "baseFunctions": [
-              12435
+              12431
             ],
             "body": {
               "id": 6720,
@@ -2089,7 +2089,7 @@
                       "stateVariable": false,
                       "storageLocation": "memory",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12396_memory_ptr_$dyn_memory_ptr",
+                        "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12392_memory_ptr_$dyn_memory_ptr",
                         "typeString": "struct IHubChild.WhitelistVars[]"
                       },
                       "typeName": {
@@ -2100,13 +2100,13 @@
                             "id": 6677,
                             "name": "WhitelistVars",
                             "nodeType": "IdentifierPath",
-                            "referencedDeclaration": 12396,
+                            "referencedDeclaration": 12392,
                             "src": "2154:13:29"
                           },
-                          "referencedDeclaration": 12396,
+                          "referencedDeclaration": 12392,
                           "src": "2154:13:29",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_WhitelistVars_$12396_storage_ptr",
+                            "typeIdentifier": "t_struct$_WhitelistVars_$12392_storage_ptr",
                             "typeString": "struct IHubChild.WhitelistVars"
                           }
                         },
@@ -2114,7 +2114,7 @@
                         "nodeType": "ArrayTypeName",
                         "src": "2154:15:29",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12396_storage_$dyn_storage_ptr",
+                          "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12392_storage_$dyn_storage_ptr",
                           "typeString": "struct IHubChild.WhitelistVars[]"
                         }
                       },
@@ -2152,7 +2152,7 @@
                       "nodeType": "NewExpression",
                       "src": "2184:19:29",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_objectcreation_pure$_t_uint256_$returns$_t_array$_t_struct$_WhitelistVars_$12396_memory_ptr_$dyn_memory_ptr_$",
+                        "typeIdentifier": "t_function_objectcreation_pure$_t_uint256_$returns$_t_array$_t_struct$_WhitelistVars_$12392_memory_ptr_$dyn_memory_ptr_$",
                         "typeString": "function (uint256) pure returns (struct IHubChild.WhitelistVars memory[] memory)"
                       },
                       "typeName": {
@@ -2163,13 +2163,13 @@
                             "id": 6681,
                             "name": "WhitelistVars",
                             "nodeType": "IdentifierPath",
-                            "referencedDeclaration": 12396,
+                            "referencedDeclaration": 12392,
                             "src": "2188:13:29"
                           },
-                          "referencedDeclaration": 12396,
+                          "referencedDeclaration": 12392,
                           "src": "2188:13:29",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_WhitelistVars_$12396_storage_ptr",
+                            "typeIdentifier": "t_struct$_WhitelistVars_$12392_storage_ptr",
                             "typeString": "struct IHubChild.WhitelistVars"
                           }
                         },
@@ -2177,7 +2177,7 @@
                         "nodeType": "ArrayTypeName",
                         "src": "2188:15:29",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12396_storage_$dyn_storage_ptr",
+                          "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12392_storage_$dyn_storage_ptr",
                           "typeString": "struct IHubChild.WhitelistVars[]"
                         }
                       }
@@ -2193,7 +2193,7 @@
                     "src": "2184:24:29",
                     "tryCall": false,
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12396_memory_ptr_$dyn_memory_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12392_memory_ptr_$dyn_memory_ptr",
                       "typeString": "struct IHubChild.WhitelistVars memory[] memory"
                     }
                   },
@@ -2351,7 +2351,7 @@
                               "referencedDeclaration": 6680,
                               "src": "2339:4:29",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12396_memory_ptr_$dyn_memory_ptr",
+                                "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12392_memory_ptr_$dyn_memory_ptr",
                                 "typeString": "struct IHubChild.WhitelistVars memory[] memory"
                               }
                             },
@@ -2375,7 +2375,7 @@
                             "nodeType": "IndexAccess",
                             "src": "2339:7:29",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_WhitelistVars_$12396_memory_ptr",
+                              "typeIdentifier": "t_struct$_WhitelistVars_$12392_memory_ptr",
                               "typeString": "struct IHubChild.WhitelistVars memory"
                             }
                           },
@@ -2423,10 +2423,10 @@
                               "name": "WhitelistVars",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 12396,
+                              "referencedDeclaration": 12392,
                               "src": "2349:13:29",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_type$_t_struct$_WhitelistVars_$12396_storage_ptr_$",
+                                "typeIdentifier": "t_type$_t_struct$_WhitelistVars_$12392_storage_ptr_$",
                                 "typeString": "type(struct IHubChild.WhitelistVars storage pointer)"
                               }
                             },
@@ -2441,13 +2441,13 @@
                             "src": "2349:24:29",
                             "tryCall": false,
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_WhitelistVars_$12396_memory_ptr",
+                              "typeIdentifier": "t_struct$_WhitelistVars_$12392_memory_ptr",
                               "typeString": "struct IHubChild.WhitelistVars memory"
                             }
                           },
                           "src": "2339:34:29",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_WhitelistVars_$12396_memory_ptr",
+                            "typeIdentifier": "t_struct$_WhitelistVars_$12392_memory_ptr",
                             "typeString": "struct IHubChild.WhitelistVars memory"
                           }
                         },
@@ -2597,7 +2597,7 @@
                     "referencedDeclaration": 6680,
                     "src": "2402:4:29",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12396_memory_ptr_$dyn_memory_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12392_memory_ptr_$dyn_memory_ptr",
                       "typeString": "struct IHubChild.WhitelistVars memory[] memory"
                     }
                   },
@@ -2644,7 +2644,7 @@
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12396_memory_ptr_$dyn_memory_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12392_memory_ptr_$dyn_memory_ptr",
                     "typeString": "struct IHubChild.WhitelistVars[]"
                   },
                   "typeName": {
@@ -2655,13 +2655,13 @@
                         "id": 6665,
                         "name": "WhitelistVars",
                         "nodeType": "IdentifierPath",
-                        "referencedDeclaration": 12396,
+                        "referencedDeclaration": 12392,
                         "src": "2068:13:29"
                       },
-                      "referencedDeclaration": 12396,
+                      "referencedDeclaration": 12392,
                       "src": "2068:13:29",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_WhitelistVars_$12396_storage_ptr",
+                        "typeIdentifier": "t_struct$_WhitelistVars_$12392_storage_ptr",
                         "typeString": "struct IHubChild.WhitelistVars"
                       }
                     },
@@ -2669,7 +2669,7 @@
                     "nodeType": "ArrayTypeName",
                     "src": "2068:15:29",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12396_storage_$dyn_storage_ptr",
+                      "typeIdentifier": "t_array$_t_struct$_WhitelistVars_$12392_storage_$dyn_storage_ptr",
                       "typeString": "struct IHubChild.WhitelistVars[]"
                     }
                   },
@@ -2686,7 +2686,7 @@
           },
           {
             "baseFunctions": [
-              12384
+              12380
             ],
             "body": {
               "id": 6740,
@@ -3614,7 +3614,7 @@
           },
           {
             "baseFunctions": [
-              12410
+              12406
             ],
             "body": {
               "id": 6815,
@@ -3812,7 +3812,7 @@
           },
           {
             "baseFunctions": [
-              12417
+              12413
             ],
             "body": {
               "id": 6829,
@@ -3981,7 +3981,7 @@
           },
           {
             "baseFunctions": [
-              12423
+              12419
             ],
             "body": {
               "id": 6877,
@@ -4547,7 +4547,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.10",
-  "updatedAt": "2023-03-09T13:10:18.503Z",
+  "updatedAt": "2023-03-16T17:43:43.063Z",
   "devdoc": {
     "kind": "dev",
     "methods": {

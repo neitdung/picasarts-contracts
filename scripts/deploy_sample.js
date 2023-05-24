@@ -5,7 +5,7 @@ const fs = require('fs');
 async function main() {
     //deploy contract
     const Hub = await hre.ethers.getContractFactory("Hub");
-    const hub = await Hub.attach(config.hub);
+    const hub = Hub.attach(config.hub);
 
     // //Grant role
     const accounts = await hre.ethers.getSigners();

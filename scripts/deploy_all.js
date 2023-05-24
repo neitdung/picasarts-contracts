@@ -3,7 +3,8 @@ const hre = require("hardhat");
 const fs = require('fs');
 async function main() {
     //deploy contract
-    const RATE_FEE = 100;
+    const accounts = await hre.ethers.getSigners();
+    const RATE_FEE = 150;
     const Hub = await hre.ethers.getContractFactory("Hub");
     const hub = await Hub.deploy(1000000);
     await hub.deployed();
@@ -17,11 +18,11 @@ async function main() {
     const rental = await Rental.deploy(RATE_FEE, hub.address);
     await rental.deployed();
     const FungibleToken = await hre.ethers.getContractFactory("FungibleToken");
-    const dai = await FungibleToken.deploy("Maker DAI", "DAI");
+    const dai = await FungibleToken.deploy("Maker DAI", "DAI", [accounts[0].address, accounts[1].address, accounts[2].address, accounts[3].address]);
     await dai.deployed();
-    const usdc = await FungibleToken.deploy("Coinbase USD", "USDC");
+    const usdc = await FungibleToken.deploy("Coinbase USD", "USDC", [accounts[0].address, accounts[1].address, accounts[2].address, accounts[3].address]);
     await usdc.deployed();
-    const usdt = await FungibleToken.deploy("Tether USD", "USDT");
+    const usdt = await FungibleToken.deploy("Tether USD", "USDT", [accounts[0].address, accounts[1].address, accounts[2].address, accounts[3].address]);
     await usdt.deployed();
 
     //Add hub child
@@ -32,7 +33,6 @@ async function main() {
     // await hub.addAcceptToken(dai.address);
     // await hub.addAcceptToken(usdc.address);
     // await hub.addAcceptToken(usdt.address);
-    const accounts = await hre.ethers.getSigners();
 
     let dataLog = {
         hub: hub.address,

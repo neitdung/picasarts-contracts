@@ -302,7 +302,6 @@ contract Marketplace is HubChild {
             (address creator, uint256 royaltyAmount) = IERC2981(nft.nftContract)
                 .royaltyInfo(nft.tokenId, nft.price);
             if (creator != nft.seller && royaltyAmount > 0) {
-                if (nft.ftContract)
                 sendAssets(msg.sender, creator, nft.ftContract, royaltyAmount);
                 sendAssets(
                     msg.sender,

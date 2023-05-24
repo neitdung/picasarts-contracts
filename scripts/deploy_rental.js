@@ -11,12 +11,18 @@ async function main() {
     await rental.deployed();
     await hub.addHubChild(rental.address);
     await hub.removeHubChild(config.rental);
-
     let dataLog = {
         ...config,
         rental: rental.address,
     }
+
     let data = JSON.stringify(dataLog);
     fs.writeFileSync('config.json', data);
-    await rental.deployed();
 }
+
+// We recommend this pattern to be able to use async/await everywhere
+// and properly handle errors.
+main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+});
