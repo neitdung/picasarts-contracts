@@ -14,11 +14,11 @@ Prerequites: [hardhat](https://hardhat.org/hardhat-runner/docs/getting-started#o
 
 Picasarts has 1 governance contract (Hub) and 3 feature contracts (Marketplace, Loan and Rental). For handle logic of feature contracts and futher extending contract, this is design of them:
 
-![Smart contracts design](../imgs/main-sc.png)
+![Smart contracts design](https://raw.githubusercontent.com/neitdung/picasarts-docs/main/imgs/main-sc.png)
 
 Those also use same a NFT standard contract called PNFT extend from ERC-721, ERC-2981 and ERC-4907. This is not required, you can create new PNFT contract by Hub or just import simple ERC-721 contract that extend Ownable contract but I encourage you use this contract for able using full product features.
 
-![PNFT](docs/imgs/pnft.png)
+![PNFT](https://raw.githubusercontent.com/neitdung/picasarts-docs/main/imgs/pnft.png)
 
 ## Use cases and flow
 
